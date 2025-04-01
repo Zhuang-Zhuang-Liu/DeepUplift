@@ -7,7 +7,7 @@ from trainer import Trainer
 from models.DragonNet import *
 from models.DragonDeepFM import *
 from models.EFIN import *
-
+from models.DESCN import *
 
 if __name__ == "__main__":
 
@@ -47,11 +47,16 @@ if __name__ == "__main__":
                  loss_f = partial(dragon_loss, alpha=1) 
                 ) 
   est3 = Trainer(model = EFIN(input_dim=12, hc_dim=16, hu_dim=8, is_self=True, act_type="elu") , 
-                  epochs=2,batch_size= 64,  
+                  epochs=10,batch_size= 64,  
                   loss_f = partial(efin_loss)  
                   )  
 
-  model = est1
+  est4 = Trainer(model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12),
+                 epochs=20,batch_size=64,
+                 loss_f = partial(esx_loss) 
+                )
+
+  model = est4
   model.fit(X_train, Y_train, T_train,valid_perc=0.2)
   t_pred,y_preds, *_ = model.predict(X_test,T_test)
 
