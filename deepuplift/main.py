@@ -8,6 +8,7 @@ from models.DragonNet import *
 from models.DragonDeepFM import *
 from models.EFIN import *
 from models.DESCN import *
+from models.TarNet import *
 
 if __name__ == "__main__":
 
@@ -52,11 +53,22 @@ if __name__ == "__main__":
                   )  
 
   est4 = Trainer(model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12),
-                 epochs=20,batch_size=64,
+                 epochs=2,batch_size=64,
                  loss_f = partial(esx_loss) 
                 )
 
-  model = est4
+  est5 = Trainer(model = TARNet(input_dim=len(features),share_dim=12,base_dim=12),
+                 epochs=10,batch_size=64,
+                 loss_f = partial(tarnet_loss) 
+                )
+
+  est6 = Trainer(model = CFRNet(input_dim=len(features),share_dim=12,base_dim=12),
+                 epochs=10,batch_size=64,
+                 loss_f = partial(cfrnet_loss,IPM=True, alpha=1) 
+                )
+
+
+  model = est6
   model.fit(X_train, Y_train, T_train,valid_perc=0.2)
   t_pred,y_preds, *_ = model.predict(X_test,T_test)
 
