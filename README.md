@@ -8,23 +8,25 @@ DeepUplift 是一个基于深度学习实现异质性因果效果建模的项目
 
 ### 🔧 安装依赖
 ```bash
-pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1
+pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1 geomloss==0.2.6
 ```
 
 ## 🚀 快速开始
 ```python
 from utils.evaluate import *
 from trainer import Trainer
-from models.DragonNet import *
+from models.DESCN import *
 
 # model
-model = Trainer(model = DragonNet(num_features),epochs=2, batch_size=64)
+model = Trainer(model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12),
+                epochs=20,batch_size=64,
+                loss_f = partial(esx_loss))
 
 # fit
-model.fit(X_train, Y_train, T_train)
+model.fit(X_train, Y_train, T_train,valid_perc=0.2)
 
 # predict
-t_pred, y_preds = model.predict(X_test, T_test)
+t_pred,y_preds, *_ = model.predict(X_test,T_test)
 
 # evaluate
 qini, qini_scores = uplift_metric(df, kind='qini')
