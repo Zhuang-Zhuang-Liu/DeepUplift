@@ -9,6 +9,7 @@ from models.DragonDeepFM import *
 from models.EFIN import *
 from models.DESCN import *
 from models.TarNet import *
+from models.EUEN import *
 
 if __name__ == "__main__":
 
@@ -18,8 +19,8 @@ if __name__ == "__main__":
   features = ['f0', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11']
 
   # io
-  csv_name = r'/Users/maczhuangzhuang/Documents/DeepUplift/dataset/criteo-uplift-v2.1-50w.csv'
-  df = pd.read_csv(csv_name).head(200000)
+  csv_name = r'C:\Users\IRON HEART\Desktop\DeepUplift-main\deepuplift\dataset\criteo-uplift-v2.1-50w.csv'
+  df = pd.read_csv(csv_name).head(2000000)
   group_stats = df.groupby(treatment).agg({outcome: ['mean', 'count','sum']})
   print('整体:',group_stats)
 
@@ -67,8 +68,13 @@ if __name__ == "__main__":
                  loss_f = partial(cfrnet_loss,IPM=True, alpha=1) 
                 )
 
+  est7 = Trainer(model = EUEN(input_dim=len(features), hc_dim=64, hu_dim=64, is_self=False),
+                 epochs=10,batch_size=64,
+                 loss_f = partial(euen_loss) 
+                ) 
 
-  model = est6
+
+  model = est7
   model.fit(X_train, Y_train, T_train,valid_perc=0.2)
   t_pred,y_preds, *_ = model.predict(X_test,T_test)
 
