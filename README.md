@@ -1,10 +1,10 @@
 # 📈 DeepUplift 项目介绍
-DeepUplift 是一个基于深度学习实现异质性因果效果建模的项目，可用于解决工业界的权益补贴/商品定价/供需调节问题。本项目基于Pytorch框架，提供多种深度Uplift模型和评估指标，帮助社区更好地理解和应用深度因果模型。
+DeepUplift 是一个基于深度学习实现异质性因果效果建模的项目，基于Pytorch框架提供多种深度Uplift模型、评估指标和训练组件，帮助社区更好地理解和应用深度因果模型，解决权益补贴/商品定价/供需调节等工业界问题
 
 ## 🌟 功能特性
-- 提供深度Uplift模型：✅DragonNet ✅DragonDeepFM ✅EFIN ✅DESCN ✅TarNet ✅CFRNet ✅EUEN >>> 🔍 
-- 提供评估指标：Qini 曲线和 AUUC 曲线 >>> 🛠
-- 提供数据处理PipLine与模型训练Trainer >>> 🛠
+- Deep Uplift Models：✅DragonNet ✅DragonDeepFM ✅EFIN ✅DESCN ✅TarNet ✅CFRNet ✅EUEN >>> 🔍 
+- Evaluate：✅Qini & AUUC  >>> 🛠
+- Tools：✅Trainer ✅PSM  >>> 🛠
 
 ### 🔧 安装依赖
 ```bash
