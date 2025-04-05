@@ -13,17 +13,16 @@ pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1 geomlos
 
 ## 🚀 快速开始
 ```python
-from utils.evaluate import *
-from trainer import Trainer
+from functools import partial
 from models.DESCN import *
+from utils.evaluate import *
 
 # model
-model = Trainer(model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12),
-                epochs=20,batch_size=64,
-                loss_f = partial(esx_loss))
+model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12)
+loss_f = partial(esx_loss)
 
 # fit
-model.fit(X_train, Y_train, T_train,valid_perc=0.2)
+model.fit(X_train, Y_train, T_train,valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,loss_f = loss_f )
 
 # predict
 t_pred,y_preds, *_ = model.predict(X_test,T_test)
