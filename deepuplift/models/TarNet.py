@@ -1,7 +1,7 @@
 import torch.nn as nn
-import torch.nn.functional as F
 from scipy.stats import wasserstein_distance
 
+from models.BaseModel import BaseModel
 
 class RepresentationNetwork(nn.Module):
     def __init__(self, input_dim, hidden_dim=64):
@@ -45,7 +45,7 @@ class HypothesisNetwork(nn.Module):
     def forward(self, x):
         return self.net(x)
     
-class TARNet(nn.Module):
+class TARNet(BaseModel):
     def __init__(self, input_dim, share_dim=12, base_dim=64):
         super().__init__()
         
@@ -103,6 +103,9 @@ def tarnet_loss(t_pred, y_preds,tr, y1,phi_x,IPM=False, alpha=0):
                         
     loss = factual_loss + alpha * IPM_term 
     return loss, factual_loss, IPM_term  # total_loss , y_loss,t_loss/表征loss
+
+
+###################
 
 class CFRNet(TARNet):
     '''The same as TARNet, but loss is modified to include IPM'''

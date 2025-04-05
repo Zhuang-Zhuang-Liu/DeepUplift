@@ -3,7 +3,6 @@ from sklearn.model_selection import train_test_split
 from functools import partial
 from utils.evaluate import *
 
-from trainer import Trainer
 from models.DragonNet import *
 from models.DragonDeepFM import *
 from models.EFIN import *
@@ -19,7 +18,7 @@ if __name__ == "__main__":
   features = ['f0', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11']
 
   # io
-  csv_name = r'C:\Users\IRON HEART\Desktop\DeepUplift-main\deepuplift\dataset\criteo-uplift-v2.1-50w.csv'
+  csv_name = r'/Users/maczhuangzhuang/Documents/DeepUplift-main/dataset/criteo-uplift-v2.1-50w.csv'
   df = pd.read_csv(csv_name).head(2000000)
   group_stats = df.groupby(treatment).agg({outcome: ['mean', 'count','sum']})
   print('整体:',group_stats)
@@ -39,43 +38,25 @@ if __name__ == "__main__":
 
 
   # choose model
-  est1 = Trainer(model = DragonNet(len(features)),
-                 epochs=2,batch_size=64,
-                 loss_f = partial(dragonnet_loss, alpha=1.0, beta=1.0,tarreg=True) 
-                )
-  est2 = Trainer(model = DragonNetDeepFM(input_dim=12,num_continuous=12,kind='classi', num_treatments=2,
-                                         embedding_size=8,shared_dim=32), 
-                 epochs=1,batch_size=64,
-                 loss_f = partial(dragon_loss, alpha=1) 
-                ) 
-  est3 = Trainer(model = EFIN(input_dim=12, hc_dim=16, hu_dim=8, is_self=True, act_type="elu") , 
-                  epochs=10,batch_size= 64,  
-                  loss_f = partial(efin_loss)  
-                  )  
+  est1 = DragonNet(len(features),shared_hidden=200, outcome_hidden=100  )
+  est2 = DragonNetDeepFM(input_dim=12,num_continuous=12,kind='classi', num_treatments=2,embedding_size=8,shared_dim=32)
+  est3 = EFIN(input_dim=12, hc_dim=16, hu_dim=8, is_self=True, act_type="elu") 
+  est4 = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12)
+  est5 = TARNet(input_dim=len(features),share_dim=12,base_dim=12)
+  est6 = CFRNet(input_dim=len(features),share_dim=12,base_dim=12)
+  est7 = EUEN(input_dim=len(features), hc_dim=64, hu_dim=64, is_self=False)
 
-  est4 = Trainer(model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12),
-                 epochs=2,batch_size=64,
-                 loss_f = partial(esx_loss) 
-                )
-
-  est5 = Trainer(model = TARNet(input_dim=len(features),share_dim=12,base_dim=12),
-                 epochs=10,batch_size=64,
-                 loss_f = partial(tarnet_loss) 
-                )
-
-  est6 = Trainer(model = CFRNet(input_dim=len(features),share_dim=12,base_dim=12),
-                 epochs=10,batch_size=64,
-                 loss_f = partial(cfrnet_loss,IPM=True, alpha=1) 
-                )
-
-  est7 = Trainer(model = EUEN(input_dim=len(features), hc_dim=64, hu_dim=64, is_self=False),
-                 epochs=10,batch_size=64,
-                 loss_f = partial(euen_loss) 
-                ) 
+  loss1 = partial(dragonnet_loss, alpha=1.0, beta=1.0,tarreg=True)   
+  loss2 = partial(dragon_loss, alpha=1)  
+  loss3 = partial(efin_loss) 
+  loss4 = partial(esx_loss)
+  loss5 = partial(tarnet_loss)
+  loss6 = partial(cfrnet_loss)
+  loss7 = partial(euen_loss)  
 
 
-  model = est7
-  model.fit(X_train, Y_train, T_train,valid_perc=0.2)
+  model,loss_f = est4,loss4
+  model.fit(X_train, Y_train, T_train,valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,loss_f = loss_f )
   t_pred,y_preds, *_ = model.predict(X_test,T_test)
 
   # predict - validation

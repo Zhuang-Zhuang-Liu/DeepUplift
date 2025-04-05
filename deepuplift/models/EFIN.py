@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
+from models.BaseModel import BaseModel
 
 
-class EFIN(nn.Module):
+class EFIN(BaseModel):
     """
     EFIN class -- a explicit feature interaction network with two heads.
     # input_dim (int): 输入维度（输入特征的维度）

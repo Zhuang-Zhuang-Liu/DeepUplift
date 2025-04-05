@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
+from models.BaseModel import BaseModel
+
 
 class DeepFM(nn.Module):
     def __init__(self, feat_size, embedding_size=4, hidden_dims=[64,32], num_continuous=2):
@@ -73,7 +75,7 @@ class DeepFM(nn.Module):
         combined = torch.cat([fm_first + fm_second, dnn_out], dim=1)  # [B, 1 + hidden_dim]
         return combined
 
-class DragonNetDeepFM(nn.Module):
+class DragonNetDeepFM(BaseModel):
     def __init__(self, input_dim, embedding_size=4,shared_dim=32,num_continuous=2, kind='reg', num_treatments=2):
         super().__init__()
         # 共享层（输出维度由DeepFM保证为1+hidden_dim[-1]）

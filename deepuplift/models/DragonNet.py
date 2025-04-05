@@ -1,10 +1,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from models.BaseModel import BaseModel
 
-class DragonNet(nn.Module):
+class DragonNet(BaseModel):
     def __init__(self, input_dim, shared_hidden=200, outcome_hidden=100):
-        super(DragonNet, self).__init__() 
+        super().__init__() 
         self.fc1 = nn.Linear(in_features=input_dim, out_features=shared_hidden)
         self.fc2 = nn.Linear(in_features=shared_hidden, out_features=shared_hidden)
         self.fcz = nn.Linear(in_features=shared_hidden, out_features=shared_hidden)
@@ -61,6 +62,7 @@ class DragonNet(nn.Module):
         return t_pred,y_preds,eps
 
 
+
 def dragonnet_loss( t_pred, y_preds,t_true,y_true, eps,alpha=1.0,beta=1.0,tarreg=True):
     """
     Parameters
@@ -101,7 +103,7 @@ def dragonnet_loss( t_pred, y_preds,t_true,y_true, eps,alpha=1.0,beta=1.0,tarreg
         targeted_regularization = torch.sum((y_true - y_pert)**2)
         loss = loss + beta * targeted_regularization   
 
-    return loss, outcome_loss, treatment_loss 
+    return loss, outcome_loss, treatment_loss
 
 
 

@@ -4,6 +4,8 @@ import math
 from geomloss import SamplesLoss
 import sys
 
+from models.BaseModel import BaseModel
+
 
 def init_weights(m):
     if isinstance(m, nn.Linear):
@@ -74,9 +76,9 @@ class ShareNetwork(nn.Module):
         return h_rep_norm
 
 # 去掉cfg，把里面涉及的参数，都放到模型输入里
-class BaseModel(nn.Module):
+class DESCN_BaseModel(nn.Module):
     def __init__(self, base_dim, do_rate):
-        super(BaseModel, self).__init__()
+        super(DESCN_BaseModel, self).__init__()
         self.DNN = nn.Sequential(
             nn.Linear(base_dim, base_dim),
             # nn.BatchNorm1d(base_dim),
@@ -124,7 +126,7 @@ class PrpsyNetwork(nn.Module):
     """propensity network"""
     def __init__(self, base_dim, do_rate):
         super(PrpsyNetwork, self).__init__()
-        self.baseModel = BaseModel(base_dim, do_rate)
+        self.baseModel = DESCN_BaseModel(base_dim, do_rate)
         self.logitLayer = nn.Linear(base_dim, 1)
         self.sigmoid = nn.Sigmoid()
         self.logitLayer.apply(init_weights)
@@ -138,7 +140,7 @@ class PrpsyNetwork(nn.Module):
 class Mu0Network(nn.Module):
     def __init__(self, base_dim, do_rate):
         super(Mu0Network, self).__init__()
-        self.baseModel = BaseModel(base_dim, do_rate)
+        self.baseModel = DESCN_BaseModel(base_dim, do_rate)
         self.logitLayer = nn.Linear(base_dim, 1)
         self.logitLayer.apply(init_weights)
         self.sigmoid = nn.Sigmoid()
@@ -154,7 +156,7 @@ class Mu0Network(nn.Module):
 class Mu1Network(nn.Module):
     def __init__(self, base_dim, do_rate):
         super(Mu1Network, self).__init__()
-        self.baseModel = BaseModel(base_dim, do_rate)
+        self.baseModel = DESCN_BaseModel(base_dim, do_rate)
         self.logitLayer = nn.Linear(base_dim, 1)
         self.logitLayer.apply(init_weights)
         self.sigmoid = nn.Sigmoid()
@@ -171,7 +173,7 @@ class TauNetwork(nn.Module):
     """pseudo tau network"""
     def __init__(self, base_dim, do_rate):
         super(TauNetwork, self).__init__()
-        self.baseModel = BaseModel(base_dim, do_rate)
+        self.baseModel = DESCN_BaseModel(base_dim, do_rate)
         self.logitLayer = nn.Linear(base_dim, 1)
         self.logitLayer.apply(init_weights)
         self.tanh = nn.Tanh()
@@ -248,7 +250,7 @@ def mmd2_torch(X, t):
 
 #######################################
 
-class ESX_Model(nn.Module):
+class ESX_Model(BaseModel):
     def __init__(self, input_dim, share_dim, base_dim, 
                     do_rate=0.2, use_batch_norm1d=True, normalization="divide",device ='cpu'):
         super().__init__()   # 用途：调用父类的初始化方法，确保子类也能正确初始化父类的属性。
