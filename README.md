@@ -22,7 +22,7 @@ model = ESX_Model(input_dim=len(features),share_dim=12,base_dim=12)
 loss_f = partial(esx_loss)
 
 # fit
-model.fit(X_train, Y_train, T_train,valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,loss_f = loss_f )
+model.fit(X_train, Y_train, T_train,valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,loss_f = loss_f,tensorboard=True )
 
 # predict
 t_pred,y_preds, *_ = model.predict(X_test,T_test)
