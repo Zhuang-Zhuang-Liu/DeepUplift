@@ -3,8 +3,8 @@ DeepUplift 是一个基于深度学习实现异质性因果效果建模的项目
 
 ## 🌟 功能特性
 - Deep Uplift Models：✅DragonNet ✅DragonDeepFM ✅EFIN ✅DESCN ✅TarNet ✅CFRNet ✅EUEN >>> 🔍 
-- Evaluate：✅Qini & AUUC  >>> 🛠
-- Tools：✅Trainer ✅PSM  >>> 🛠
+- Evaluate：✅Qini/AUUC  >>> 🛠
+- Tools：✅Trainer ✅PSM ✅TensorBoard  >>> 🛠
 
 ### 🔧 安装依赖
 ```bash
