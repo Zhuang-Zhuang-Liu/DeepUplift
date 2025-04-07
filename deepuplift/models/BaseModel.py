@@ -61,7 +61,7 @@ class BaseModel(nn.Module):
 
     def fit(self, x, y, t,batch_size=64, epochs=10,
             learning_rate=1e-5,valid_perc=None,
-            loss_f=None
+            loss_f=None, tensorboard=False
             ):
 
         model = self.train()
@@ -69,6 +69,14 @@ class BaseModel(nn.Module):
 
         self.create_dataloaders(x, y, t, valid_perc,batch_size)
         early_stopper = EarlyStopper(patience=10, min_delta=0)
+        
+        if tensorboard:
+            from torch.utils.tensorboard import SummaryWriter
+            import time
+            model_name = self.__class__.__name__
+            timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+            log_dir = f"runs/{model_name}_{timestamp}"
+            writer = SummaryWriter(log_dir=log_dir)
         for epoch in range(epochs):
             for batch, (X, tr, y1) in enumerate(self.train_dataloader):
                 t_pred,y_preds,*eps = model(X,tr)
@@ -83,12 +91,25 @@ class BaseModel(nn.Module):
                 print(f"""--epoch: {epoch} 
                 train_loss: {loss:.4f} outcome_loss:{outcome_loss:.4f} treatment_loss:{treatment_loss:.4f} 
                 valid_loss: {valid_loss:.4f} valid_outcome_loss:{valid_outcome_loss:.4f} valid_treatment_loss:{valid_treatment_loss:.4f} """)
+                if tensorboard:
+                    writer.add_scalar('Loss/train', loss, epoch)
+                    writer.add_scalar('Loss/valid', valid_loss, epoch)
+                    writer.add_scalar('OutcomeLoss/train', outcome_loss, epoch)
+                    writer.add_scalar('OutcomeLoss/valid', valid_outcome_loss, epoch)
+                    writer.add_scalar('TreatmentLoss/train', treatment_loss, epoch)
+                    writer.add_scalar('TreatmentLoss/valid', valid_treatment_loss, epoch)
                 model.train()
                 if early_stopper.early_stop(valid_loss):
+                    if tensorboard:
+                        writer.close()
                     break
             else:
                 print(f"""epoch: {epoch} 
                 train_loss: {loss:.4f} outcome_loss:{outcome_loss:.4f} treatment_loss:{treatment_loss:.4f} """)
+                if tensorboard:
+                    writer.add_scalar('Loss/train', loss, epoch)
+                    writer.add_scalar('OutcomeLoss/train', outcome_loss, epoch)
+                    writer.add_scalar('TreatmentLoss/train', treatment_loss, epoch)
 
 
     def validate_step(self,loss_f):
