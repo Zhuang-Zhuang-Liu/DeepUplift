@@ -10,7 +10,7 @@ class TowerUnit(nn.Module):
     def __init__(self, input_dim, hidden_dims=[], 
                  share_output_dim=16, activation=nn.ELU(), 
                  use_batch_norm=False, use_dropout=False, dropout_rate=0.5, 
-                 task='share', classi_nums=None, device='cpu'):
+                 task='share', classi_nums=None, device='cpu', use_xavier=True):
         super().__init__()
         self.device = device
         layers = []
@@ -18,7 +18,12 @@ class TowerUnit(nn.Module):
         # hidden layers
         prev_dim = input_dim
         for dim in hidden_dims:
-            layers.append(nn.Linear(prev_dim, dim))
+            linear_layer = nn.Linear(prev_dim, dim)
+            if use_xavier:
+                nn.init.xavier_uniform_(linear_layer.weight)
+                if linear_layer.bias is not None:
+                    nn.init.zeros_(linear_layer.bias)
+            layers.append(linear_layer)
             if use_batch_norm:  
                 layers.append(nn.BatchNorm1d(dim))
             layers.append(activation)
@@ -38,7 +43,12 @@ class TowerUnit(nn.Module):
         else:
             raise ValueError("task must be 'regression', 'classification' or 'share'")
             
-        layers.append(nn.Linear(prev_dim, output_dim))
+        output_layer = nn.Linear(prev_dim, output_dim)
+        if use_xavier:
+            nn.init.xavier_uniform_(output_layer.weight)
+            if output_layer.bias is not None:
+                nn.init.zeros_(output_layer.bias)
+        layers.append(output_layer)
         if use_batch_norm:  
             layers.append(nn.BatchNorm1d(output_dim))
         if output_activation is not None:
