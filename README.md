@@ -3,16 +3,16 @@ DeepUplift 是一个基于深度学习实现异质性因果效果建模的项目
 
 ## 🌟 功能特性
 - Deep Uplift Models：
-  - ✅ DragonNet：基于深度学习的因果推断模型
-  - ✅ DragonDeepFM：结合DeepFM的因果推断模型
-  - ✅ EFIN：基于特征交互的因果推断网络
-  - ✅ DESCN：深度因果效应网络
-  - ✅ TarNet：目标网络模型
-  - ✅ CFRNet：反事实回归网络
-  - ✅ EUEN：端到端因果推断网络
-  - 🔄 GANITE：开发中
-  - 🔄 CEVAE：开发中
-  - 🔄 EEUEN：开发中
+  - ✅ DragonNet
+  - ✅ DragonDeepFM
+  - ✅ EFIN
+  - ✅ DESCN
+  - ✅ TarNet
+  - ✅ CFRNet
+  - ✅ EUEN
+  - ✅ CEVAE
+  - ✅ EEUEN
+  - 🔄 GANITE：开发中 
 
 - 评估指标：
   - ✅ Qini/AUUC 曲线
