@@ -1,45 +1,46 @@
 # 📈 DeepUplift 
-DeepUplift 是一个基于深度学习实现异质性因果效果建模的项目，基于Pytorch框架提供多种深度Uplift模型、评估指标和训练组件，帮助社区更好地理解和应用深度因果模型，解决权益补贴/商品定价/供需调节等工业界问题
+DeepUplift is a project that implements heterogeneous causal effect modeling based on deep learning. It provides various deep Uplift models, evaluation metrics, and training components based on the PyTorch framework, helping the community better understand and apply deep causal models to solve industrial problems such as equity subsidies, product pricing, and supply-demand regulation.
 
-## 🌟 功能特性
+## 🌟 Features
 - Deep Uplift Models：
-  - ✅ DragonNet
-  - ✅ DragonDeepFM
-  - ✅ EFIN
-  - ✅ DESCN
-  - ✅ TarNet
-  - ✅ CFRNet
-  - ✅ EUEN
-  - ✅ CEVAE
-  - ✅ EEUEN
-  - 🔄 GANITE：开发中 
+  - ✅ TarNet: Estimating individual treatment effect: generalization bounds and algorithms, 2016.
+  - ✅ CFRNet: Estimating individual treatment effect: generalization bounds and algorithms, 2016.
+  - ✅ CEVAE: Causal effect inference with deep latent-variable models. In Advances in Neural Information Processing Systems, 2017.
+  - ✅ GANITE：Estimation of Individualized Treatment Effects using Generative Adversarial Nets, International Conference on Learning Representations (ICLR), 2018.
+  - ✅ DragonNet: Adapting Neural Networks for the Estimation of Treatment Effects, 2019.
+  - ✅ DragonDeepFM: Adapting Neural Networks for the Estimation of Treatment Effects, 2019.
+  - ✅ EUEN: Addressing Exposure Bias in Uplift Modeling forLarge-scale Online Advertising, IEEE International Conference on Data Mining (ICDM), 2021.
+  - ✅ EEUEN: Addressing Exposure Bias in Uplift Modeling forLarge-scale Online Advertising, IEEE International Conference on Data Mining (ICDM), 2021.
+  - ✅ DESCN: Deep Entire Space Cross Networks for Individual Treatment Effect Estimation, SIGKDD, 2022.
+  - ✅ EFIN: Explicit Feature Interaction-aware Uplift Network for Online Marketing, SIGKDD, 2023.
+  - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021
 
-- 评估指标：
-  - ✅ Qini/AUUC 曲线
-  - ✅ 因果效应评估指标
-  - ✅ 模型性能评估工具
+- Evaluation Metrics：
+  - ✅ Qini/AUUC Curves
+  - ✅ Causal Effect Evaluation Metrics
+  - ✅ Model Performance Evaluation Tools
 
-- 工具支持：
-  - ✅ 模型训练器
-  - ✅ 倾向得分匹配(PSM)
-  - ✅ TensorBoard 可视化
-  - ✅ 数据预处理工具
+- Tool Support：
+  - ✅ Model Trainer
+  - ✅ Propensity Score Matching (PSM)
+  - ✅ TensorBoard Visualization
+  - ✅ Data Preprocessing Tools
 
-### 🔧 安装依赖
+### 🔧 Installation Dependencies
 ```bash
 pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1 geomloss==0.2.6
 ```
 
-## 🚀 快速开始
+## 🚀 Quick Start
 ```python
 from deepuplift.models import DESCN
 from deepuplift.utils.evaluate import uplift_metric
 
-# 初始化模型
+# Initialize model
 model = DESCN.ESX(input_dim=len(features), share_dim=12, base_dim=12)
 loss_f = partial(esx_loss)
 
-# 模型训练
+# Model training
 model.fit(
     X_train, 
     Y_train, 
@@ -52,26 +53,26 @@ model.fit(
     tensorboard=True
 )
 
-# 模型预测
+# Model prediction
 t_pred, y_preds, *_ = model.predict(X_test, T_test)
 
-# 模型评估
+# Model evaluation
 qini, qini_scores = uplift_metric(df, kind='qini')
 ```
 
-## 📁 项目结构
+## 📁 Project Structure
 ```
 deepuplift/
-├── models/          # 模型实现
-├── utils/           # 工具函数
-│   ├── evaluate.py  # 模型指标
-│   ├── matrics.py   # loss指标
-│   └── psm.py       # 倾向得分匹配
-└── main.py          # 主程序入口
+├── models/          # Model implementations
+├── utils/           # Utility functions
+│   ├── evaluate.py  # Model metrics
+│   ├── matrics.py   # Loss metrics
+│   └── psm.py       # Propensity score matching
+└── main.py          # Main program entry
 ```
 
-## 🤝 贡献
-如果你对本项目感兴趣，欢迎贡献代码、提出问题或建议。你可以通过提交 Pull Request 或 Issue 来参与开发。
+## 🤝 Contribution
+If you are interested in this project, you are welcome to contribute code, raise issues, or make suggestions. You can participate in development by submitting Pull Requests or Issues.
 
-## 📄 许可证
-本项目采用 [MIT 许可证](LICENSE) 进行授权。
+## 📄 License
+This project is licensed under the [MIT License](LICENSE).
