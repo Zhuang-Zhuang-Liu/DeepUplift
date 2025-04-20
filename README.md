@@ -33,11 +33,11 @@ pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1 geomlos
 
 ## 🚀 Quick Start
 ```python
-from deepuplift.models import DESCN
+from deepuplift.models.DESCN import ESX
 from deepuplift.utils.evaluate import uplift_metric
 
 # Initialize model
-model = DESCN.ESX(input_dim=len(features), share_dim=12, base_dim=12)
+model = ESX(input_dim=len(features), share_dim=12, base_dim=12)
 loss_f = partial(esx_loss)
 
 # Model training
