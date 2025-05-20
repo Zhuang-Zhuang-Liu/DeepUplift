@@ -75,8 +75,8 @@ deepuplift/
 If you are interested in this project, you are welcome to contribute code, raise issues, or make suggestions. You can participate in development by submitting Pull Requests or Issues.
 
 ## 💬 Contact Me
-💚 微信: Wave_1024
-📚 公众号: 壮壮的三味书屋
+- 💚 Wechat: Wave_1024
+- 📚 公众号: 壮壮的三味书屋
 
 ## 📄 License
 This project is licensed under the [MIT License](LICENSE).
