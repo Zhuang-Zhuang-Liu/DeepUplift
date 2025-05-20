@@ -77,6 +77,7 @@ If you are interested in this project, you are welcome to contribute code, raise
 ## 💬 Contact Me
 💚 微信: Wave_1024
 📚 公众号: 壮壮的三味书屋
+![image](https://github.com/user-attachments/assets/defbb3a5-10c4-4288-8555-eef1631dfa0d)
 
 ## 📄 License
 This project is licensed under the [MIT License](LICENSE).
