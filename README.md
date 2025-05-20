@@ -77,6 +77,8 @@ If you are interested in this project, you are welcome to contribute code, raise
 ## 💬 Contact Me
 💚 微信: Wave_1024
 📚 公众号: 壮壮的三味书屋
+<img src="https://github.com/user-attachments/assets/defbb3a5-10c4-4288-8555-eef1631dfa0d" alt="二维码" style="max-width: 400px; height: auto;" />
+
 ![image](https://github.com/user-attachments/assets/defbb3a5-10c4-4288-8555-eef1631dfa0d?width=40)
 
 ## 📄 License
