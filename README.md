@@ -51,6 +51,7 @@ t_pred, y_preds, *_ = model.predict(X_test, T_test)
 qini, qini_scores = uplift_metric(df, kind='qini')
 ```
 
+
 ## 📊 Download Demo Data
 - Download the data from : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
 - Data source: criteo-uplift-v2.1
@@ -69,8 +70,10 @@ deepuplift/
 └── main.py       
 ```
 
+
 ## 🤝 Contribution
 If you are interested in this project, you are welcome to contribute code, raise issues, or make suggestions. You can participate in development by submitting Pull Requests or Issues.
+
 
 ## 💬 Contact Me
 - 📮 Email: zhuangzhuangliu_v1@qq.com
