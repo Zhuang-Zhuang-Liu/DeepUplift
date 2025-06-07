@@ -24,11 +24,11 @@ DeepUplift is a project that implements heterogeneous causal effect modeling bas
   - ✅ Model Trainer
   - ✅ Propensity Score Matching (PSM)
   - ✅ TensorBoard Visualization
-  - ✅ Data Preprocessing Tools
+  - 🔄 Data Preprocessing Tools
 
 ### 🔧 Installation Dependencies
 ```bash
-pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1 geomloss==0.2.6
+pip install pandas==2.1.4 torch==1.12.1 geomloss==0.2.6 sklearn==1.3.2 matplotlib==3.8.2 
 ```
 
 ## 🚀 Quick Start
@@ -36,45 +36,44 @@ pip install pandas==2.1.4 sklearn==1.3.2 matplotlib==3.8.2 torch==1.12.1 geomlos
 from deepuplift.models.DESCN import ESX
 from deepuplift.utils.evaluate import uplift_metric
 
-# Initialize model
-model = ESX(input_dim=len(features), share_dim=12, base_dim=12)
-loss_f = partial(esx_loss)
+# Model
+model,loss_f = ESX(input_dim=len(features), share_dim=12, base_dim=12),partial(esx_loss)
 
-# Model training
-model.fit(
-    X_train, 
-    Y_train, 
-    T_train,
-    valid_perc=0.2,
-    epochs=2,
-    batch_size=64,
-    learning_rate=1e-5,
-    loss_f=loss_f,
-    tensorboard=True
-)
+# Training
+model.fit(X_train, Y_train, T_train,
+          valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,
+          loss_f=loss_f,tensorboard=True)
 
-# Model prediction
+# Prediction
 t_pred, y_preds, *_ = model.predict(X_test, T_test)
 
-# Model evaluation
+# Evaluation
 qini, qini_scores = uplift_metric(df, kind='qini')
 ```
+
+## 📊 Download Demo Data
+- Download the data from : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
+- Data source: criteo-uplift-v2.1
+
 
 ## 📁 Project Structure
 ```
 deepuplift/
-├── models/          # Model implementations
-├── utils/           # Utility functions
-│   ├── evaluate.py  # Model metrics
-│   ├── matrics.py   # Loss metrics
-│   └── psm.py       # Propensity score matching
-└── main.py          # Main program entry
+├── models/         
+├── utils/          
+│   ├── evaluate.py    
+│   ├── matrics.py      
+│   └── psm.py          
+├── dataset/       
+│   └── data_link.md    
+└── main.py       
 ```
 
 ## 🤝 Contribution
 If you are interested in this project, you are welcome to contribute code, raise issues, or make suggestions. You can participate in development by submitting Pull Requests or Issues.
 
 ## 💬 Contact Me
+- 📮 Email: zhuangzhuangliu_v1@qq.com
 - 💚 Wechat: Wave_1024
 - 📚 公众号: 壮壮的三味书屋
 
