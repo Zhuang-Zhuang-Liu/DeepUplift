@@ -1,0 +1,3 @@
+- Download the data from : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
+- Data source: criteo-uplift-v2.1
+- If the link fails, you can contact the author: https://github.com/Zhuang-Zhuang-Liu/DeepUplift
