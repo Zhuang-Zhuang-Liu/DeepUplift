@@ -16,7 +16,7 @@ DeepUplift is a project that implements heterogeneous causal effect modeling bas
   - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021
 
 - Evaluation Metrics：
-  - ✅ Qini/AUUC Curves
+  - ✅ QINI/AUUC Curves
   - ✅ Causal Effect Evaluation Metrics
   - ✅ Model Performance Evaluation Tools
 
@@ -54,7 +54,7 @@ qini, qini_scores = uplift_metric(df, kind='qini')
 
 ## 📊 Download Demo Data
 - Download the data from : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
-- Data source: criteo-uplift-v2.1
+- Data source: criteo-uplift-v2.1 (https://ailab.criteo.com/criteo-uplift-prediction-dataset)
 
 
 ## 📁 Project Structure
