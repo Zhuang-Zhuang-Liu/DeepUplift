@@ -5,15 +5,20 @@ DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effe
 ## 🌟 Features
 - Deep Uplift Models：
   - ✅ TarNet: Estimating individual treatment effect: generalization bounds and algorithms, 2016.
-  - ✅ CFRNet: Estimating individual treatment effect: generalization bounds and algorithms, 2016.
-  - ✅ CEVAE: Causal effect inference with deep latent-variable models. In Advances in Neural Information Processing Systems, 2017.
-  - ✅ GANITE：Estimation of Individualized Treatment Effects using Generative Adversarial Nets, International Conference on Learning Representations (ICLR), 2018.
-  - ✅ DragonNet: Adapting Neural Networks for the Estimation of Treatment Effects, 2019.
+  - ✅ CFRNet: U. Shalit, F. D. Johansson, and D. Sontag. “Estimating individual treatment effect: generalization bounds and algorithms”.2016.
+    - Link: https://arxiv.org/abs/1606.03976
+  - ✅ CEVAE: C. Louizos, U. Shalit, J. M. Mooij, D. Sontag, R. Zemel, and M. Welling.Causal effect inference with deep latent-variable models.NEURIPS. 2017.
+  - ✅ GANITE：Jinsung Yoon, James Jordon, and Mihaela Van Der Schaar. 2018. GANITE: Estimation of individualized treatment effects using generative adversarial nets. In
+Proceedings of the 6th International Conference on Learning Representations
+  - ✅ DragonNet: Claudia Shi, David M Blei, and Victor Veitch. 2019. Adapting neural networks for the estimation of treatment effects. In Proceedings of the 33rd International Conference on Neural Information Processing Systems. 2507–2517.
+    - Link: https://arxiv.org/pdf/1906.02120 
   - ✅ DragonDeepFM: Adapting Neural Networks for the Estimation of Treatment Effects, 2019.
-  - ✅ EUEN: Addressing Exposure Bias in Uplift Modeling forLarge-scale Online Advertising, IEEE International Conference on Data Mining (ICDM), 2021.
-  - ✅ EEUEN: Addressing Exposure Bias in Uplift Modeling forLarge-scale Online Advertising, IEEE International Conference on Data Mining (ICDM), 2021.
-  - ✅ DESCN: Deep Entire Space Cross Networks for Individual Treatment Effect Estimation, SIGKDD, 2022.
+  - ✅ EUEN: Wenwei Ke, Chuanren Liu, Xiangfu Shi, Yiqiao Dai, S Yu Philip, and XiaoqiangZhu. 2021. Addressing exposure bias in uplift modeling for large-scale online advertising. In Proceedings of the 2021 IEEE International Conference on Data Mining. 1156–1161.
+  - ✅ EEUEN: Wenwei Ke, Chuanren Liu, Xiangfu Shi, Yiqiao Dai, S Yu Philip, and XiaoqiangZhu. 2021. Addressing exposure bias in uplift modeling for large-scale online advertising. In Proceedings of the 2021 IEEE International Conference on Data Mining. 1156–1161.
+  - ✅ DESCN: Kailiang Zhong, Fengtong Xiao, Yan Ren, Yaorong Liang, Wenqing Yao, Xiaofeng Yang, and Ling Cen. 2022. DESCN: Deep entire space cross networks for individual treatment effect estimation. In Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining. 4612–4620.
+    - Link: https://arxiv.org/abs/2207.09920 
   - ✅ EFIN: Explicit Feature Interaction-aware Uplift Network for Online Marketing, SIGKDD, 2023.
+    - Link:  https://arxiv.org/abs/2306.00315
   - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021
 
 - Evaluation Metrics：
@@ -56,9 +61,7 @@ qini, qini_scores = uplift_metric(df, kind='qini')
 ## 📊 Download Demo Data
 - Un-biaised dataset
     - Download Link : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
-    - File Name : criteo-uplift-v2.1-un-biaised-sample50w.csv
     - Data source: https://ailab.criteo.com/criteo-uplift-prediction-dataset
-    - If the Download Link fails, pls contact author: https://github.com/Zhuang-Zhuang-Liu/DeepUplift
 - Biaised dataset
     - Download Link : https://pan.baidu.com/share/init?surl=CKJvzow7UFGwrdXbkt1mQA (Baidu Drive with code: 75hr )
     - Data source: https://github.com/kailiang-zhong/DESCN/tree/main/data/Lazada_dataset
