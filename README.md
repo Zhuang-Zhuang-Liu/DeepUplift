@@ -1,5 +1,6 @@
 # 📈 DeepUplift 
-DeepUplift is a project that implements heterogeneous causal effect modeling based on deep learning. It provides various deep Uplift models, evaluation metrics, and training components based on the PyTorch framework, helping the community better understand and apply deep causal models to solve industrial problems such as equity subsidies, product pricing, and supply-demand regulation.
+DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use complex causal models with model.fit() ，and model.predict() .
+
 
 ## 🌟 Features
 - Deep Uplift Models：
