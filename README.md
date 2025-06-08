@@ -1,24 +1,28 @@
 # 📈 DeepUplift 
-DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use all models with model.fit() and model.predict().
+DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use uplift models with model.fit() and model.predict().
 
 
 ## 🌟 Features
 - Deep Uplift Models：
-  - ✅ TarNet: Estimating individual treatment effect: generalization bounds and algorithms, 2016.
-  - ✅ CFRNet: U. Shalit, F. D. Johansson, and D. Sontag. “Estimating individual treatment effect: generalization bounds and algorithms”.2016.
+  - ✅ TarNet: U. Shalit, F. D. Johansson, and D. Sontag. Estimating individual treatment effect: generalization bounds and algorithms.2016.
+    - Link: https://arxiv.org/abs/1606.03976    
+  - ✅ CFRNet: U. Shalit, F. D. Johansson, and D. Sontag. Estimating individual treatment effect: generalization bounds and algorithms.2016.
     - Link: https://arxiv.org/abs/1606.03976
-  - ✅ CEVAE: C. Louizos, U. Shalit, J. M. Mooij, D. Sontag, R. Zemel, and M. Welling.Causal effect inference with deep latent-variable models.NEURIPS. 2017.
-  - ✅ GANITE：Jinsung Yoon, James Jordon, and Mihaela Van Der Schaar. 2018. GANITE: Estimation of individualized treatment effects using generative adversarial nets. In
-Proceedings of the 6th International Conference on Learning Representations
   - ✅ DragonNet: Claudia Shi, David M Blei, and Victor Veitch. 2019. Adapting neural networks for the estimation of treatment effects. In Proceedings of the 33rd International Conference on Neural Information Processing Systems. 2507–2517.
     - Link: https://arxiv.org/pdf/1906.02120 
-  - ✅ DragonDeepFM: Adapting Neural Networks for the Estimation of Treatment Effects, 2019.
-  - ✅ EUEN: Wenwei Ke, Chuanren Liu, Xiangfu Shi, Yiqiao Dai, S Yu Philip, and XiaoqiangZhu. 2021. Addressing exposure bias in uplift modeling for large-scale online advertising. In Proceedings of the 2021 IEEE International Conference on Data Mining. 1156–1161.
+  - ✅ DragonDeepFM: Claudia Shi, David M Blei, and Victor Veitch. 2019. Adapting neural networks for the estimation of treatment effects. In Proceedings of the 33rd International Conference on Neural Information Processing Systems. 2507–2517.
+  - ✅ EUEN: Wenwei Ke, Chuanren Liu, Xiangfu Shi, Yiqiao Dai, S Yu Philip, and XiaoqiangZhu. 2021. Addressing exposure bias in uplift modeling for large-scale online advertising. In Proceedings of the 2021 IEEE International Conference on Data Mining.1156–1161.
+    - Link: https://github.com/aifor/eeuen
   - ✅ EEUEN: Wenwei Ke, Chuanren Liu, Xiangfu Shi, Yiqiao Dai, S Yu Philip, and XiaoqiangZhu. 2021. Addressing exposure bias in uplift modeling for large-scale online advertising. In Proceedings of the 2021 IEEE International Conference on Data Mining. 1156–1161.
+    - Link: https://github.com/aifor/eeuen
   - ✅ DESCN: Kailiang Zhong, Fengtong Xiao, Yan Ren, Yaorong Liang, Wenqing Yao, Xiaofeng Yang, and Ling Cen. 2022. DESCN: Deep entire space cross networks for individual treatment effect estimation. In Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining. 4612–4620.
     - Link: https://arxiv.org/abs/2207.09920 
   - ✅ EFIN: Explicit Feature Interaction-aware Uplift Network for Online Marketing, SIGKDD, 2023.
-    - Link:  https://arxiv.org/abs/2306.00315
+    - Link: https://arxiv.org/abs/2306.00315
+  - ✅ CEVAE: C. Louizos, U. Shalit, J. M. Mooij, D. Sontag, R. Zemel, and M. Welling.Causal effect inference with deep latent-variable models. NEURIPS. 2017.
+    - Link: https://github.com/AMLab-Amsterdam/CEVAE  
+  - ✅ GANITE：Jinsung Yoon, James Jordon, and Mihaela Van Der Schaar. 2018. GANITE: Estimation of individualized treatment effects using generative adversarial nets. In Proceedings of the 6th International Conference on Learning Representations.
+    - Link: https://github.com/jsyoon0823/GANITE
   - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021
 
 - Evaluation Metrics：
