@@ -1,5 +1,5 @@
 # 📈 DeepUplift 
-DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use uplift models with model.fit() and model.predict().
+DeepUplift is a **PyTorch**-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use uplift models with **model.fit()** and **model.predict()**.
 
 
 ## 🌟 Features
@@ -51,8 +51,7 @@ model,loss_f = ESX(input_dim=len(features), share_dim=12, base_dim=12),partial(e
 
 # Training
 model.fit(X_train, Y_train, T_train,
-          valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,
-          loss_f=loss_f,tensorboard=True)
+          valid_perc=0.2,epochs=2,batch_size=64,learning_rate=1e-5,loss_f=loss_f,tensorboard=True)
 
 # Prediction
 t_pred, y_preds, *_ = model.predict(X_test, T_test)
