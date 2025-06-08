@@ -5,11 +5,14 @@ import torch.nn.functional as F
 from models.BaseModel import BaseModel
 
 class EUEN(BaseModel):
-    """
-    
-    """
-    def __init__(self, input_dim: int, hc_dim: int, hu_dim: int, is_self: bool = False, l2_reg: float = 0.0, act_type: str = "elu"):
+    def __init__(self, input_dim: int, hc_dim: int, hu_dim: int, is_self: bool = False, l2_reg: float = 0.0, act_type: str = "elu",task='regression'):
         super(EUEN, self).__init__()
+
+        # Validate task type
+        if task != "regression":
+            raise ValueError(f"Unsupported task type: '{task}'. This model only supports 'regression' task.")
+        
+
         self.hc_dim = hc_dim
         self.hu_dim = hu_dim
         self.is_self = is_self
@@ -75,7 +78,7 @@ class EUEN(BaseModel):
     
 ############################33
 
-def euen_loss(t_pred, y_preds, is_treat, label):
+def euen_loss(t_pred, y_preds, is_treat, label,task='regression'):
     """
     Calculate the uplift MSE loss
     
@@ -85,8 +88,13 @@ def euen_loss(t_pred, y_preds, is_treat, label):
         is_treat: Tensor of shape [batch_size, 1] indicating treatment (1) or control (0)
         concat_pred: Tensor of shape [batch_size, 2] containing predictions for control and treatment
     """
-    c_pred = y_preds[0]#.unsqueeze(1)
-    t_pred = y_preds[1]#.unsqueeze(1)
+    # Validate task type
+    if task != "regression":
+        raise ValueError(f"Unsupported task type: '{task}'. This model only supports 'regression' task.")
+        
+
+    c_pred = y_preds[0]
+    t_pred = y_preds[1]
     
     is_t = is_treat
     is_c = 1. - is_treat

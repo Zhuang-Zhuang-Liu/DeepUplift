@@ -2,16 +2,27 @@ import torch.nn as nn
 import torch
 
 class TowerUnit(nn.Module):
-    """
-    Classification task: output softmax
-    Regression task: output values
-    Share: output high-dimensional features
-    """
     def __init__(self, input_dim, hidden_dims=[], 
                  share_output_dim=16, activation=nn.ELU(), 
                  use_batch_norm=False, use_dropout=False, dropout_rate=0.2, 
                  task='share', classi_nums=None, 
                  device='cpu', use_xavier=True):
+        """
+        Tower unit for building multi-layer neural networks.
+        
+        Args:
+            input_dim (int): Input feature dimension
+            hidden_dims (list): List of hidden layer dimensions, default []
+            share_output_dim (int): Output dimension for shared task, default 16
+            activation (nn.Module): Activation function, default nn.ELU()
+            use_batch_norm (bool): Whether to use batch normalization, default False
+            use_dropout (bool): Whether to use dropout, default False
+            dropout_rate (float): Dropout rate, default 0.2
+            task (str): Task type ('share', 'classification', 'regression'), default 'share'
+            classi_nums (int): Number of classes for classification task, default None
+            device (str): Device for computation, default 'cpu'
+            use_xavier (bool): Whether to use Xavier initialization, default True
+        """
         super().__init__()
         self.device = device
         layers = []
@@ -34,9 +45,12 @@ class TowerUnit(nn.Module):
 
         # output layers
         if task == 'classification' :
-            if classi_nums is None:
+            if classi_nums == 2:
+                output_dim , output_activation = 1 , nn.Sigmoid()
+            elif classi_nums > 2:
+                output_dim , output_activation = classi_nums , nn.Softmax(dim=-1)
+            else:
                 raise ValueError("classi_nums must be specified for classification task")
-            output_dim , output_activation = classi_nums , nn.Softmax(dim=-1)
         elif task == 'regression':
             output_dim , output_activation = 1 , None  # No activation function for regression tasks
         elif task == 'share':
@@ -58,15 +72,25 @@ class TowerUnit(nn.Module):
         self.net = nn.Sequential(*layers).to(device)
 
     def forward(self, x):
+        """
+        Forward propagation through the tower network.
+        
+        Args:
+            x (torch.Tensor): Input tensor [batch_size x input_dim]
+            
+        Returns:
+            torch.Tensor: Output tensor with shape depending on task type
+        """
         x = x.to(self.device)
         return self.net(x)
 
 
 class SelfAttentionUnit(nn.Module):
     """
-    Self-Attention unit for implementing self-attention mechanism
-    Parameters:
-         hidden_dim (int): Hidden layer dimension
+    Self-Attention unit for implementing self-attention mechanism.
+    
+    Args:
+        hidden_dim (int): Hidden layer dimension for Q, K, V transformations
     """
     def __init__(self, hidden_dim):
         super().__init__()
@@ -77,12 +101,14 @@ class SelfAttentionUnit(nn.Module):
         
     def forward(self, x):
         """
-        Forward propagation
-        Parameters:
-            x (torch.Tensor): Input tensor with shape [batch_size, seq_len, hidden_dim]
+        Forward propagation with self-attention mechanism.
+        
+        Args:
+            x (torch.Tensor): Input tensor [batch_size x seq_len x hidden_dim]
+            
         Returns:
-            torch.Tensor: Output tensor with shape [batch_size, seq_len, hidden_dim]
-            torch.Tensor: Attention weights with shape [batch_size, seq_len, seq_len]
+            torch.Tensor: Output tensor [batch_size x seq_len x hidden_dim]
+            torch.Tensor: Attention weights [batch_size x seq_len x seq_len]
         """
         Q = self.Q_w(x)
         K = self.K_w(x)

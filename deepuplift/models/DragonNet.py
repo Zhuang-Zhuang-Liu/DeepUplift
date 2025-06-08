@@ -1,5 +1,6 @@
 import torch
-from models.TarNet import TarNet, tarnet_loss
+from models.BaseModel import BaseLoss
+from models.TarNet import *
 
 
 class DragonNet(TarNet):
@@ -13,8 +14,8 @@ class DragonNet(TarNet):
                          task=task, model_type='dragonnet')
 
 
-def dragonnet_loss(t_pred, y_preds,t_true, y_true,alpha=1.0,beta=1.0,tarreg=True, task='regression'):
-    return tarnet_loss(t_pred=t_pred, y_preds=y_preds, 
+def dragonnet_loss(t_pred, y_preds,t_true, y_true,phi_x=None,alpha=1.0,beta=1.0,tarreg=True, task='regression'):
+    return BaseLoss(t_pred=t_pred, y_preds=y_preds, 
                        t_true=t_true, y_true=y_true,
                        loss_type='dragonnet',
                        alpha=alpha, beta=beta, tarreg=tarreg, task=task)

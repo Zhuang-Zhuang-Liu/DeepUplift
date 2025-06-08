@@ -6,8 +6,12 @@ from models.BaseUnit import TowerUnit
 
 
 class CEVAE(BaseModel):
-    def __init__(self, input_dim, h_dim, x_repr_dim, z_repr_dim, rep_norm=True, is_self=True, act_type="elu"):
+    def __init__(self, input_dim, h_dim, x_repr_dim, z_repr_dim, rep_norm=True, is_self=True, act_type="elu", task='regression'):
         super().__init__()
+        # Validate task type
+        if task not in ['regression']:
+            raise ValueError(f"Unsupported task type: '{task}'. This model supports 'regression' tasks.")
+
         self.h_dim = h_dim
         self.x_repr_dim = x_repr_dim
         self.z_repr_dim = z_repr_dim
@@ -205,7 +209,7 @@ class CEVAE(BaseModel):
 
 
 
-def cevae_loss(t_pred, y_preds, t_true, y_true, eps):
+def cevae_loss(t_pred, y_preds, t_true, y_true, eps,task='regression'):
     """
     Parameters
     ----------
@@ -229,6 +233,10 @@ def cevae_loss(t_pred, y_preds, t_true, y_true, eps):
     treatment_loss: torch.Tensor
         Treatment prediction loss
     """
+    # Validate task type
+    if task not in ['regression']:
+        raise ValueError(f"Unsupported task type: '{task}'. This model supports 'regression' tasks.")
+    
     x_z_repr, t_z_bin, z_latent, z_latent_prior = eps
     y_xt_prob, y_zt_prob = y_preds
     

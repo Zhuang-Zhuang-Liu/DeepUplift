@@ -7,36 +7,36 @@ from sklearn.metrics import roc_auc_score, confusion_matrix, roc_curve
 def uplift_metric(df,outcome_col="outcome",treatment_col="treatment",treatment_value = 1,
                     kind = 'qini',if_plot = True,):
     """
-    paper：Causal Inference and Uplift Modeling A review of the literature
-    auuc: uplift curve的面积, uplift curve = (实验组转化率-对照组转化率)*(实验组人数+对照组人数)
-    qini: qini curve的面积,当实验组和对照组样本不一致时, 应选择qini, qini curve = 实验组累计转化 - 对照组累计转化 *（实验组累计人数/对照组累计人数）
-    # 注意：AUUC指标计算不能用来自观测数据，因为实验组和对照组的分数分布不一致
+    Reference: Causal Inference and Uplift Modeling A review of the literature
+    auuc: area under uplift curve, uplift curve = (treatment group conversion rate - control group conversion rate) * (treatment group count + control group count)
+    qini: area under qini curve, when treatment and control groups have different sample sizes, qini should be chosen, qini curve = treatment group cumulative conversions - control group cumulative conversions * (treatment group cumulative count / control group cumulative count)
+    # Note: AUUC metric calculation cannot be used for observational data because the score distributions of treatment and control groups are inconsistent
     """
     df = df.copy()
     model_names = [x for x in df.columns if x not in [outcome_col, treatment_col]]
 
-    # 添加随机curve
+    # Add random curve
     model_names.append('random')
     df['random'] = np.random.rand(df.shape[0])
 
     all_metric = {}
     for model_name in model_names:
-        # 01-排序
-        subset_df = df.copy()   # 筛选+复制：避免修改原数据
-        sorted_df = subset_df.sort_values(model_name, ascending=False).reset_index(drop=True) # 降序排序
-        sorted_df.index = sorted_df.index + 1 # 索引+1，方便计算
-        # 02-累加统计：实验组、对照组的累计数
+        # 01-Sort
+        subset_df = df.copy()   # Filter and copy: avoid modifying original data
+        sorted_df = subset_df.sort_values(model_name, ascending=False).reset_index(drop=True) # Sort in descending order
+        sorted_df.index = sorted_df.index + 1 # Index + 1 for easier calculation
+        # 02-Cumulative statistics: cumulative count of treatment and control groups
         sorted_df["cumsum_tr"] = (sorted_df[treatment_col] == treatment_value).astype(int).cumsum()
         sorted_df["cumsum_ct"] = sorted_df.index.values - sorted_df["cumsum_tr"]
-        # 03-累加统计：实验组、对照组的累计转化数
+        # 03-Cumulative statistics: cumulative conversions of treatment and control groups
         sorted_df["cumsum_y_tr"] = ( sorted_df[outcome_col] * (sorted_df[treatment_col] == treatment_value).astype(int)
                                     ).cumsum()
         sorted_df["cumsum_y_ct"] = (sorted_df[outcome_col] * (sorted_df[treatment_col] == 0).astype(int)
                                     ).cumsum()
-        # 04- Qini Curve ：假设对照组都干预的增量
+        # 04- Qini Curve: incremental gain assuming all control group are treated
         qini_value = ( sorted_df["cumsum_y_tr"]  - sorted_df["cumsum_y_ct"] 
                       * ( sorted_df["cumsum_tr"]/ sorted_df["cumsum_ct"]) )
-        # 04- Uplift Curve：假设100%都干预的增量
+        # 04- Uplift Curve: incremental gain assuming 100% are treated
         uplift_curve = (
                         ( (sorted_df["cumsum_y_tr"]/sorted_df["cumsum_tr"]) - (sorted_df["cumsum_y_ct"]/sorted_df["cumsum_ct"]))
                         * ( sorted_df["cumsum_tr"] + sorted_df["cumsum_ct"] )
@@ -73,14 +73,14 @@ def uplift_metric(df,outcome_col="outcome",treatment_col="treatment",treatment_v
 
 def plot_bins_uplift(df, uplift_col, treatment_col, outcome_col,figsize=(8, 8),bins = 10,if_plot = False):
     """
-    可视化的统计模型分箱后的转化率及增益转化率
+    Visualize conversion rates and uplift rates after binning the statistical model
     """
-    # calculate
+    # Calculate
     df['bins'] = pd.qcut(df[uplift_col], bins,duplicates='drop')
     result = df.groupby([treatment_col, 'bins'])[outcome_col].agg(['mean', 'sum','count'])
     result.reset_index(inplace=True)
     
-    # plot
+    # Plot
     if if_plot:
         unique_treatment = result[treatment_col].unique()
         plt.figure(figsize=figsize)
@@ -90,7 +90,7 @@ def plot_bins_uplift(df, uplift_col, treatment_col, outcome_col,figsize=(8, 8),b
             for x, y in zip(subset['bins'].astype(str), subset['mean']):
                 plt.text(x, y, f'{y:.2f}', ha='center', va='bottom', fontsize=8)
         
-        # plot uplift
+        # Plot uplift
         treatment_1 = result[result[treatment_col] == 1]
         treatment_0 = result[result[treatment_col] == 0]
         if len(treatment_1) == len(treatment_0):
@@ -99,7 +99,7 @@ def plot_bins_uplift(df, uplift_col, treatment_col, outcome_col,figsize=(8, 8),b
             for x, y in zip(treatment_1['bins'].astype(str), diff):
                 plt.text(x, y, f'{y:.2f}', ha='center', va='bottom', fontsize=8)
         else:
-            print("处理组和控制组的分箱数量不一致，无法计算差值。")
+            print("The number of bins for treatment and control groups are inconsistent, unable to calculate difference.")
 
             plt.xlabel(uplift_col)
             plt.ylabel(f'Mean of {outcome_col}')
@@ -112,19 +112,19 @@ def plot_bins_uplift(df, uplift_col, treatment_col, outcome_col,figsize=(8, 8),b
 
 def calculate_metrics_by_treatment(df, outcome_col,treatment_col,threshold=0.5,if_plot = True):
     """
-    根据 T_test 的值（0 或 1）拆分数据，分别评估 y0_pred 和 y1_pred 与 Y_test 的差异。
-    参数:
-    df (pd.DataFrame): 包含 'outcome', 'y0_pred', 'y1_pred', 't_pred' 的DataFrame
-    threshold (float): 用于计算混淆矩阵的阈值，默认为0.5
-    返回:
-    dict: 包含AUC和混淆矩阵的字典
+    Split data based on T_test values (0 or 1), and evaluate the differences between y0_pred and y1_pred with Y_test respectively.
+    Parameters:
+    df (pd.DataFrame): DataFrame containing 'outcome', 'y0_pred', 'y1_pred', 't_pred'
+    threshold (float): Threshold for calculating confusion matrix, default is 0.5
+    Returns:
+    dict: Dictionary containing AUC and confusion matrix
     """
     def calculate_metrics(df, outcome, pred, threshold, ax_roc, ax_cm):
         auc = roc_auc_score(df[outcome], df[pred])
         pred_class = (df[pred] >= threshold).astype(int)
         cm = confusion_matrix(df[outcome], pred_class)
         if if_plot:
-            # 绘制auc
+            # Plot AUC
             fpr, tpr, thresholds = roc_curve(df[outcome], df[pred])
             ax_roc.plot(fpr, tpr, label=f'{pred} (AUC = {auc:.2f})')
             ax_roc.plot([0, 1], [0, 1], 'k--')
@@ -132,7 +132,7 @@ def calculate_metrics_by_treatment(df, outcome_col,treatment_col,threshold=0.5,i
             ax_roc.set_ylabel('True Positive Rate')
             ax_roc.set_title('ROC Curve')
             ax_roc.legend(loc='lower right')
-            # 绘制混淆矩阵
+            # Plot confusion matrix
             sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, ax=ax_cm)
             ax_cm.set_xlabel('Predicted')
             ax_cm.set_ylabel('Actual')
@@ -142,8 +142,8 @@ def calculate_metrics_by_treatment(df, outcome_col,treatment_col,threshold=0.5,i
     df_t0 = df[df[treatment_col] == 0]
     df_t1 = df[df[treatment_col] == 1]
     if if_plot:
-        fig, axes = plt.subplots(2, 2, figsize=(10, 10))  # 增加图形大小
-        plt.subplots_adjust(wspace=0.3, hspace=0.3)  # 调整子图之间的间距
+        fig, axes = plt.subplots(2, 2, figsize=(10, 10))  
+        plt.subplots_adjust(wspace=0.3, hspace=0.3)  
         auc_y0, cm_y0 = calculate_metrics(df_t0, outcome_col, 'y0_pred', threshold, axes[0, 0], axes[1, 0])
         auc_y1, cm_y1 = calculate_metrics(df_t1, outcome_col, 'y1_pred', threshold, axes[0, 1], axes[1, 1])
     else:

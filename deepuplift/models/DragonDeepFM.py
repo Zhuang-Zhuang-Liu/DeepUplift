@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models.BaseModel import BaseModel
+from models.BaseModel import BaseModel, BaseLoss
 from models.BaseUnit import TowerUnit
 
 
@@ -87,7 +87,7 @@ class DragonDeepFM(BaseModel):
         self.treatment_head = TowerUnit(input_dim= share_dim,
                                         hidden_dims= base_hidden_dims,activation= base_hidden_func, 
                                         use_batch_norm= False,
-                                        task = task,classi_nums = num_treatments )
+                                        task = 'classification',classi_nums = num_treatments )
         # Outcome head*n: for predicting the outcome of each treatment (regression or binary classification)
         self.outcome_heads = nn.ModuleList([
                              TowerUnit(input_dim= share_dim,
@@ -99,57 +99,15 @@ class DragonDeepFM(BaseModel):
 
     def forward(self, x, tr=None):
         shared = self.shared_layer(x)  
-        t_pred = self.treatment_head(shared)  # Softmax with 2 outputs
-        y_preds = [head(shared) for head in self.outcome_heads] # Softmax outputs
-        y_preds = [y[:, 1] for y in y_preds]  # Take treatment=1 probability as sigmoid output
+        t_pred = self.treatment_head(shared)  
+        y_preds = [head(shared) for head in self.outcome_heads] 
+        #y_preds = [y[:, 1] for y in y_preds]  # Take treatment=1 probability as sigmoid output
         return t_pred,y_preds
 
 
 
-
-def dragon_loss(t_pred, y_preds, treatment, outcome, eps=None, alpha=1.0,beta=1.0,tarreg=False, task='regression'):
-    """
-    Parameters:
-        t_pred: [batch_size, num_treatments] Softmax output of treatment prediction, supports single treatment and multi-treatment
-        y_preds: [batch_size, 1] * num_treatments Sigmoid output of each treatment tower, supports classification and regression
-        treatment: [batch_size] Tensor with treatment indices (0 to num_treatments-1)
-        outcome: [batch_size] Tensor with binary labels
-        eps: torch.Tensor, trainable epsilon parameter
-        alpha: float, weight of treatment loss
-        beta: float, weight of targeted regularization
-        tarreg: bool, whether to use targeted regularization
-        task: str, 'regression' or 'classification'
-    Returns:
-        total_loss: combination of outcome prediction loss and treatment prediction loss
-    """
-    # 1. Convert y_preds to tensor [batch_size, num_treatments]
-    y_pred_matrix = torch.stack(y_preds, dim=1).squeeze(-1)  # [batch_size, num_treatments]
-
-    # 2. Outcome prediction loss: only use predictions for actual treatment
-    treatment = treatment.long()  # Convert to long type to support one_hot
-    treatment_mask = F.one_hot(treatment, num_classes=len(y_preds)).float().squeeze(1)  # [batch_size, num_treatments]
-    selected_y_pred = (y_pred_matrix * treatment_mask).sum(dim=1)  # [batch_size] Only keep predictions for actual treatment
-    
-    if task == 'regression':
-        outcome_loss = torch.mean((selected_y_pred.unsqueeze(1) - outcome.float())**2)
-    elif task == 'classification':
-        outcome_loss = F.binary_cross_entropy(selected_y_pred.unsqueeze(1), outcome.float())
-    else:
-        raise ValueError("task must be either 'regression' or 'classification'")
-    
-    # 3. Treatment prediction loss: cross entropy  
-    treatment_loss = F.cross_entropy(t_pred, treatment.squeeze())
-    
-    # 4. Combined loss
-    loss = outcome_loss + alpha * treatment_loss
-
-    if tarreg:
-        y_pred = treatment * y_preds[1] + (1 - treatment) * y_preds[0]   # Predict y based on actual t: only supports binary classification of t
-
-        #y_pert = y_pred + eps # Can achieve asymptotic consistency: loss of 2 towers decreases together, removing eps cannot achieve asymptotic consistency  ********************To be modified
-        y_pert = y_pred # **********
-
-        targeted_regularization = torch.sum((outcome - y_pert)**2)
-        loss = loss + beta * targeted_regularization  
-
-    return loss, outcome_loss, treatment_loss
+def dragonnet_loss(t_pred, y_preds,t_true, y_true,phi_x=None,alpha=1.0,beta=1.0,tarreg=True, task='regression'):
+    return BaseLoss(t_pred=t_pred, y_preds=y_preds, 
+                       t_true=t_true, y_true=y_true,
+                       loss_type='dragonnet',
+                       alpha=alpha, beta=beta, tarreg=tarreg, task=task)

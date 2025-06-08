@@ -28,14 +28,14 @@ class EEUEN(BaseModel):
             hidden_dims=base_hidden_dims,
             activation=base_hidden_func,
             task=task,
-            classi_nums=1
+            classi_nums=2
         )
         self.c_tau = TowerUnit(
             input_dim=hc_dim,
             hidden_dims=base_hidden_dims,
             activation=base_hidden_func,
             task=task,
-            classi_nums=1
+            classi_nums=2
         )
 
         # Treat Exposure Network
@@ -54,7 +54,7 @@ class EEUEN(BaseModel):
             hidden_dims=base_hidden_dims,
             activation=base_hidden_func,
             task=task,
-            classi_nums=1
+            classi_nums=2
         )
 
         # Uplift Network
@@ -73,14 +73,14 @@ class EEUEN(BaseModel):
             hidden_dims=base_hidden_dims,
             activation=base_hidden_func,
             task=task,
-            classi_nums=1
+            classi_nums=2
         )
         self.u_tau = TowerUnit(
             input_dim=hu_dim,
             hidden_dims=base_hidden_dims,
             activation=base_hidden_func,
             task=task,
-            classi_nums=1
+            classi_nums=2
         )
 
     def forward(self, x, tr=None):
@@ -130,9 +130,11 @@ def eeuen_loss(t_pred, y_preds, tr, y1, e_logit=None, alpha=1.0, beta=1.0, task=
     if task == 'regression':
         outcome_loss = torch.mean((1 - tr) * torch.square(y1 - uc) + 
                                 tr * torch.square(y1 - ut))
-    else:  # classification
+    elif task == 'classification': # classification
         outcome_loss = torch.mean((1 - tr) * F.binary_cross_entropy(uc, y1) +
                                 tr * F.binary_cross_entropy(ut, y1))
+    else:
+        raise ValueError(f"Unsupported task type: '{task}'. This model only supports 'regression' or 'classification' task.")
     
     # Exposure loss
     if e_logit is not None:

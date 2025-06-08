@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from models.BaseModel import BaseModel
+from models.BaseModel import BaseModel, BaseLoss
 from models.BaseUnit import TowerUnit, SelfAttentionUnit
 
 
@@ -12,10 +12,11 @@ class EFIN(BaseModel):
     # is_self (bool): Whether to include self-attention module
     # act_type (str): Activation function type, default is 'elu'
     """
-    def __init__(self, input_dim, hc_dim, hu_dim, is_self, func = nn.ELU() ):
+    def __init__(self, input_dim, hc_dim, hu_dim, is_self, task='regression', func=nn.ELU()):
         super(EFIN, self).__init__()
         self.nums_feature = input_dim
         self.is_self = is_self
+        self.task = task
         self.act = func
 
         ''' Feature encoder module'''
@@ -41,7 +42,6 @@ class EFIN(BaseModel):
         self.c_logit = nn.Linear(hc_dim // 8 if is_self else hc_dim // 4, 1)
         self.c_tau = nn.Linear(hc_dim // 8 if is_self else hc_dim // 4, 1)
 
-
         '''uplift net'''
         uplift_hidden_dims = [hu_dim, hu_dim // 2, hu_dim // 4]
         if is_self:
@@ -50,7 +50,11 @@ class EFIN(BaseModel):
                                     activation=func, task='share',
                                     share_output_dim=hu_dim // 8 if is_self else hu_dim // 4
                                     )
+        
+        '''pred treatment logit'''
         self.t_logit = nn.Linear(hu_dim // 8 if is_self else hu_dim // 4, 1)
+
+        '''pred outcome uplift logit'''
         self.u_tau = nn.Linear(hu_dim // 8 if is_self else hu_dim // 4, 1)
 
 
@@ -71,7 +75,6 @@ class EFIN(BaseModel):
 
     
     def forward(self, x, t):
-        # Input processing
         t = t.squeeze()
         t_true = torch.unsqueeze(t, 1) # Add one dimension to input tensor
         x_rep = x.unsqueeze(2) * self.x_rep.weight.unsqueeze(0) # Feature encoding
@@ -95,30 +98,31 @@ class EFIN(BaseModel):
         t_rep = self.t_rep(torch.ones_like(t_true))   # Feature encoder for treatment
         xt, xt_weight = self.interaction_attn(t_rep, x_rep) # xt: xt after cross attention
         u_last = self.uplift_net(xt)
-        t_logit = self.t_logit(u_last)
+
+        # pred treatment
+        t_logit = self.t_logit(u_last) 
+        t_pred = torch.sigmoid(t_logit)
+
+        # pred outcome uplift logit
         u_tau = self.u_tau(u_last)
-        t_prob = torch.sigmoid(t_logit)
 
-        return  t_logit,[c_logit, u_tau + c_logit],u_tau   # t_pred,y_preds,*eps
+        if self.task == 'classification':
+            ut_pred = torch.sigmoid(c_logit + u_tau)
+            y0_pred = c_prob
+            y1_pred = ut_pred
+        elif self.task == 'regression':  # regression
+            y0_pred = c_logit
+            y1_pred = u_tau + c_logit
+        else:
+            raise ValueError("task must be either 'regression' or 'classification'")
+        
+        y_preds = [y0_pred, y1_pred]
+        return t_pred, y_preds, u_tau
 
 
 
-def efin_loss(t_logit, y_preds,t, label_list,u_tau):
-    t = t.squeeze()
-    c_logit = y_preds[0]
-    c_logit_fix = c_logit.detach()  # The detach() function is used to detach a tensor from the computation graph, obtaining a new tensor that shares data with the original tensor but does not participate in gradient computation.
-                                     # If this is not done, problems will occur during gradient computation because the original tensor and the detached tensor will share gradient information, leading to incorrect gradient computation.
-    uc = c_logit    # y_preds[0]
-    ut = (c_logit_fix + u_tau)   #y_preds[1]
+def efin_loss(t_pred, y_preds,t_true, y_true,phi_x=None,task='regression'):
+    return  BaseLoss(t_pred=t_pred, y_preds=y_preds, 
+                       t_true=t_true, y_true=y_true,
+                       loss_type='efin',task=task)
 
-    y_true = torch.unsqueeze(label_list, 1)
-    t_true = torch.unsqueeze(t, 1)
-
-    # response loss
-    criterion = torch.nn.BCEWithLogitsLoss(reduction='mean')
-
-    temp = torch.square((1 - t_true) * uc + t_true * ut - y_true) 
-    loss1 = torch.mean(temp)
-    loss2 = criterion(t_logit, (1 - t_true))   # Invert t_true for debiasing
-    loss = loss1 + loss2
-    return loss,loss1,loss2

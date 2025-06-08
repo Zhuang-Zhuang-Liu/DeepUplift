@@ -1,9 +1,12 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from torch.utils.data import TensorDataset, DataLoader
+from scipy.stats import wasserstein_distance
 
 
 class EarlyStopper:
@@ -78,9 +81,9 @@ class BaseModel(nn.Module):
             log_dir = f"runs/{model_name}_{timestamp}"
             writer = SummaryWriter(log_dir=log_dir)
         for epoch in range(epochs):
-            for batch, (X, tr, y1) in enumerate(self.train_dataloader):
-                t_pred,y_preds,*eps = model(X,tr)
-                loss, outcome_loss, treatment_loss = loss_f(t_pred, y_preds,tr, y1, *eps)
+            for batch, (X, t_true, y_true) in enumerate(self.train_dataloader):
+                t_pred,y_preds,*eps = model(X,t_true)
+                loss, outcome_loss, treatment_loss = loss_f(t_pred, y_preds,t_true, y_true, *eps)
                 optim.zero_grad()
                 loss.backward()
                 optim.step()
@@ -117,9 +120,9 @@ class BaseModel(nn.Module):
         valid_outcome_loss = []
         valid_treatment_loss = []
         with torch.no_grad(): 
-            for batch, (X, tr, y1) in enumerate(self.valid_dataloader):
-                t_pred,y_preds, *eps = self.predict(X,tr)
-                loss, outcome_loss, treatment_loss = loss_f(t_pred, y_preds,tr,y1, *eps)
+            for batch, (X, t_true, y_true) in enumerate(self.valid_dataloader):
+                t_pred,y_preds, *eps = self.predict(X,t_true)
+                loss, outcome_loss, treatment_loss = loss_f(t_pred, y_preds,t_true,y_true, *eps)
                 valid_loss.append(loss)
                 valid_outcome_loss.append(outcome_loss)        
                 valid_treatment_loss.append(treatment_loss)
@@ -128,16 +131,69 @@ class BaseModel(nn.Module):
                torch.Tensor(valid_treatment_loss).mean()
 
 
-    def predict(self, x,tr=None):
+    def predict(self, x,t_true=None):
         model = self.train()
         if isinstance(x, pd.DataFrame):  
             x = x.to_numpy()
-        if tr is not None:
-            if isinstance(tr, pd.Series):
-                tr = tr.to_numpy()
-            tr = torch.Tensor(tr)
+        if t_true is not None:
+            if isinstance(t_true, pd.Series):
+                t_true = t_true.to_numpy()
+            t_true = torch.Tensor(t_true)
         x = torch.Tensor(x)
         with torch.no_grad(): 
-            return model(x,tr)
+            return model(x,t_true)
+        
+
+
+def BaseLoss(t_pred, y_preds, t_true, y_true, phi_x=None, loss_type='tarnet', 
+                IPM=False, alpha=0, beta=1.0, tarreg=False, task='regression'):
+    
+    n0 = torch.sum(1. - t_true)  # treated sample size
+    n1 = torch.sum(t_true)       # control sample size
+    if task == 'regression':
+        loss0 = torch.sum((1. - t_true) * torch.square(y_true - y_preds[0]))   # mse
+        loss1 = torch.sum(t_true * torch.square(y_true - y_preds[1]))       
+    elif task == 'classification':
+        loss0 = torch.sum((1. - t_true) * F.binary_cross_entropy(y_preds[0], y_true, reduction='none'))
+        loss1 = torch.sum(t_true * F.binary_cross_entropy(y_preds[1], y_true, reduction='none'))
+    else:
+        raise ValueError("task must be either 'regression' or 'classification'")
+    outcome_loss = loss0 / (n0 + 1e-8) + loss1 / (n1 + 1e-8)
+    
+    if loss_type == 'tarnet':
+        if IPM:
+            ipm_loss = 0
+            for i in range(t_true.shape[1]):   
+                phi_x_treated = phi_x[t_true[:, i] == 1].detach().cpu().numpy()
+                phi_x_control = phi_x[t_true[:, i] == 0].detach().cpu().numpy()
+                if phi_x_treated.size > 0 and phi_x_control.size > 0:
+                    for dim in range(phi_x_treated.shape[1]):
+                        ipm_loss += wasserstein_distance(phi_x_treated[:, dim], phi_x_control[:, dim])
+                    ipm_loss /= phi_x_treated.shape[1]          
+            loss = outcome_loss + alpha * ipm_loss
+            return loss, outcome_loss, ipm_loss
+        else:
+            loss = outcome_loss
+            return loss, outcome_loss, 0
+            
+
+    elif loss_type == 'dragonnet':
+        treatment_loss = torch.sum(F.binary_cross_entropy(t_pred, t_true))
+        loss = outcome_loss + alpha * treatment_loss
+        if tarreg:
+            y_pred = t_true * y_preds[1] + (1 - t_true) * y_preds[0]  
+            y_pert = y_pred
+            targeted_regularization = torch.sum((y_true - y_pert)**2)
+            loss = loss + beta * targeted_regularization
+        return loss, outcome_loss, treatment_loss
+    
+    elif loss_type == 'efin':
+        criterion = torch.nn.BCELoss(reduction='mean')
+        treatment_loss = criterion(t_pred, (1 - t_true))     # Reverse Label
+        loss = outcome_loss + treatment_loss
+        return loss, outcome_loss, treatment_loss
+    
+    else:
+        raise ValueError("loss_type must be either 'tarnet', 'dragonnet', or 'efin'")
 
     

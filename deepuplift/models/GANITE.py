@@ -223,7 +223,11 @@ class InferenceNetDeep(nn.Module):
 
 
 class GANITE:
-    def __init__(self, input_dim, h_dim, is_self=True):
+    def __init__(self, input_dim, h_dim, task='classification', is_self=True):
+
+        if task != 'classification':
+            raise ValueError(f"Only 'classification' task is supported, but got '{task}'")
+        
         self.input_dim = input_dim
         self.h_dim = h_dim
         self.is_self = is_self
@@ -320,7 +324,7 @@ class GANITE:
 
 
 
-def ganite_loss( t, y, y_tilde, d_logit, y_hat):
+def ganite_loss( t, y, y_tilde, d_logit, y_hat, task='classification'):
     """计算GANITE模型的损失函数
     
     Args:
@@ -334,6 +338,10 @@ def ganite_loss( t, y, y_tilde, d_logit, y_hat):
     Returns:
         tuple: (D_loss, G_loss, I_loss) 三个损失值
     """
+
+    if task != 'classification':
+        raise ValueError(f"Only 'classification' task is supported, but got '{task}'")
+    
     # 1. 计算判别器损失
     #y_tilde = generator(x, t, y)
     #d_logit = discriminator(x, t, y, y_tilde)
