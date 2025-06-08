@@ -1,5 +1,5 @@
 # 📈 DeepUplift 
-DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use complex causal models with model.fit() ，and model.predict() .
+DeepUplift is a PyTorch-based project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use complex causal models with model.fit() and model.predict().
 
 
 ## 🌟 Features
