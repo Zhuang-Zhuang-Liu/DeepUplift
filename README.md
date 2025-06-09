@@ -23,7 +23,7 @@ DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal 
     - Link: https://github.com/AMLab-Amsterdam/CEVAE  
   - ✅ GANITE：Jinsung Yoon, James Jordon, and Mihaela Van Der Schaar. 2018. GANITE: Estimation of individualized treatment effects using generative adversarial nets. In Proceedings of the 6th International Conference on Learning Representations.
     - Link: https://github.com/jsyoon0823/GANITE
-  - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021
+  - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021.
 
 - Evaluation Metrics：
   - ✅ QINI/AUUC Curves
@@ -73,14 +73,17 @@ qini, qini_scores = uplift_metric(df, kind='qini')
 ## 📁 Project Structure
 ```
 deepuplift/
-├── models/         
+├── models/
+│   ├── BaseModel.py
+│   ├── BaseUnit.py
+│   ├── ...             
 ├── utils/          
 │   ├── evaluate.py    
 │   ├── matrics.py      
 │   └── psm.py          
 ├── dataset/       
 │   └── data_link.md    
-└── main.py       
+└── main.py     
 ```
 
 
