@@ -1,6 +1,5 @@
 # 📈 DeepUplift 
 **Current Version: v1.0**
-
 DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use uplift models with **model.fit()** and **model.predict()**.
 
 
@@ -38,15 +37,14 @@ DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal 
   - ✅ TensorBoard Visualization
   - 🔄 Data Preprocessing Tools
 
-### 🔧 Installation Dependencies
-```bash
-pip install pandas==2.1.4 torch==1.12.1 geomloss==0.2.6 sklearn==1.3.2 matplotlib==3.8.2 seaborn==0.13.0 scipy==1.11.4
-
-```
-
-### 🐍 Python Version Support
+### 🔧 Dependencies
 - **Supported Python Versions**: 3.8, 3.9, 3.10, 3.11
 - **Recommended Python Version**: 3.11
+```bash
+pip install pandas==2.1.4 torch==1.12.1 geomloss==0.2.6 sklearn==1.3.2 matplotlib==3.8.2 seaborn==0.13.0 scipy==1.11.4
+```
+
+
 
 ## 🚀 Quick Start
 ```python
@@ -68,7 +66,7 @@ qini, qini_scores = uplift_metric(df, kind='qini')
 ```
 
 
-## 📊 Download Demo Data
+## 📊 Public Dataset
 - Unbiased dataset
     - Download Link : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
     - Data source: https://ailab.criteo.com/criteo-uplift-prediction-dataset
@@ -94,24 +92,35 @@ deepuplift/
 ```
 
 
-## 🤝 Contribution
-If you are interested in this project, you are welcome to contribute code, raise issues, or make suggestions. You can participate in development by submitting Pull Requests or Issues.
+## 💬 Disscussion
+|公众号：壮壮的三味书屋|Wechat：Wave_1024|学习小组
+|:--:|:--:|:--:|
+| <img src="pics/gh_qrcode.jpg" width="150" height="150"> | <img src="pics/wx_qrcode.png" width="150" height="150"> |<img src="pics/wx_qrcode.png" width="150" height="150"> |
 
 
-## 💬 Contact Me
-- 📮 Email: zhuangzhuangliu_v1@qq.com
-- 💚 Wechat: Wave_1024
-- 📚 公众号: 壮壮的三味书屋
+
+## 🤝 Main contributors ( welcome to join us! )
+<table border="0">
+  <tbody>
+    <tr align="center" >
+      <td>
+        ​ <a href="https://github.com/Zhuang-Zhuang-Liu"><img width="70" height="70" src="https://github.com/Zhuang-Zhuang-Liu.png?s=40" alt="pic"></a><br>
+        ​ <a href="https://github.com/Zhuang-Zhuang-Liu">Zhuang Zhuang Liu</a> ​
+        <p> ...updating </p>​
+      </td>
+      <td>
+         <a href="https://github.com/wyx1010120806"><img width="70" height="70" src="https://github.com/wyx1010120806.png?s=40" alt="pic"></a><br>
+         <a href="https://github.com/wyx1010120806">Wei Yang</a> ​
+        <p> ...updating  </p>​
+      </td>
+  </tbody>
+</table>
+
+
 
 ## 📝 Version History
-
-### [v1.0] - 2025-08-16
+#### [v1.0] - 2025-08-16
 #### Fixed Bugs
-- **EFIN** - detach c_logit during y1_pred avoid gradient flow
+- **EFIN** - Fixed detach c_logit during y1_pred avoid gradient flow
 - **Dragonnet** - add eps for target regularization
 - **Dataloaders** - fix bug in BaseModel.py
-
-
-
-## 📄 License
-This project is licensed under the [MIT License](LICENSE).
