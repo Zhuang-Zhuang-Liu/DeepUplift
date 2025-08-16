@@ -106,13 +106,13 @@ deepuplift/
     <tr align="center">
       <td width="130">
         <a href="https://github.com/Zhuang-Zhuang-Liu"><img width="70" height="70" src="https://github.com/Zhuang-Zhuang-Liu.png?s=40" alt="pic"></a><br>
-        <a href="https://github.com/Zhuang-Zhuang-Liu">Zhuang Zhuang Liu</a>
-        <p> Webank Lab</p>
+        <a href="https://github.com/Zhuang-Zhuang-Liu">ZhuangZhuangLiu</a>
+        <p> Webank Lab </p>
       </td>
       <td width="130">
         <a href="https://github.com/wyx1010120806"><img width="70" height="70" src="https://github.com/wyx1010120806.png?s=40" alt="pic"></a><br>
         <a href="https://github.com/wyx1010120806">Wei Yang</a>
-        <p>...updating</p>
+        <p> ByteDance </p>
       </td>
     </tr>
   </tbody>
