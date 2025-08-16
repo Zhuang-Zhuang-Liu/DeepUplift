@@ -72,7 +72,7 @@ qini, qini_scores = uplift_metric(df, kind='qini')
     - Download Link : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
     - Data source: https://ailab.criteo.com/criteo-uplift-prediction-dataset
 - Biased dataset
-    - Download Link : https://pan.baidu.com/share/init?surl=CKJvzow7UFGwrdXbkt1mQA (Baidu Drive: 75hr )
+    - Download Link : https://pan.baidu.com/share/init?surl=CKJvzow7UFGwrdXbkt1mQA (Baidu Drive with code: 75hr )
     - Data source: https://github.com/kailiang-zhong/DESCN/tree/main/data/Lazada_dataset
 
 
@@ -103,17 +103,18 @@ deepuplift/
 ## 🤝 Main contributors ( welcome to join us! )
 <table border="0">
   <tbody>
-    <tr align="center" >
-      <td>
-        ​ <a href="https://github.com/Zhuang-Zhuang-Liu"><img width="70" height="70" src="https://github.com/Zhuang-Zhuang-Liu.png?s=40" alt="pic"></a><br>
-        ​ <a href="https://github.com/Zhuang-Zhuang-Liu">Zhuang Zhuang Liu</a> ​
-        <p> ...updating </p>​
+    <tr align="center">
+      <td width="130">
+        <a href="https://github.com/Zhuang-Zhuang-Liu"><img width="70" height="70" src="https://github.com/Zhuang-Zhuang-Liu.png?s=40" alt="pic"></a><br>
+        <a href="https://github.com/Zhuang-Zhuang-Liu">Zhuang Zhuang Liu</a>
+        <p> Webank Lab</p>
       </td>
-      <td>
-         <a href="https://github.com/wyx1010120806"><img width="70" height="70" src="https://github.com/wyx1010120806.png?s=40" alt="pic"></a><br>
-         <a href="https://github.com/wyx1010120806">Wei Yang</a> ​
-        <p> ...updating  </p>​
+      <td width="130">
+        <a href="https://github.com/wyx1010120806"><img width="70" height="70" src="https://github.com/wyx1010120806.png?s=40" alt="pic"></a><br>
+        <a href="https://github.com/wyx1010120806">Wei Yang</a>
+        <p>...updating</p>
       </td>
+    </tr>
   </tbody>
 </table>
 
