@@ -1,4 +1,6 @@
 # 📈 DeepUplift 
+**Current Version: v1.0**
+
 DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use uplift models with **model.fit()** and **model.predict()**.
 
 
@@ -21,7 +23,7 @@ DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal 
     - Link: https://arxiv.org/abs/2306.00315
   - ✅ CEVAE: C. Louizos, U. Shalit, J. M. Mooij, D. Sontag, R. Zemel, and M. Welling.Causal effect inference with deep latent-variable models. NEURIPS. 2017.
     - Link: https://github.com/AMLab-Amsterdam/CEVAE  
-  - ✅ GANITE：Jinsung Yoon, James Jordon, and Mihaela Van Der Schaar. 2018. GANITE: Estimation of individualized treatment effects using generative adversarial nets. In Proceedings of the 6th International Conference on Learning Representations.
+  - ✅ GANITE：Jinsung Yoon, James Jordon, and Mihaela Van Der Schaar. 2018. GANITE: Estimation of individualized treatment effects using generative adversarial nets. In Proceedings of the 6th International Conference on Learning Representations.
     - Link: https://github.com/jsyoon0823/GANITE
   - 🔄 SNet: Nonparametric Estimation of Heterogeneous Treatment Effects: From Theory to Learning Algorithms, 2021.
 
@@ -38,8 +40,13 @@ DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal 
 
 ### 🔧 Installation Dependencies
 ```bash
-pip install pandas==2.1.4 torch==1.12.1 geomloss==0.2.6 sklearn==1.3.2 matplotlib==3.8.2 
+pip install pandas==2.1.4 torch==1.12.1 geomloss==0.2.6 sklearn==1.3.2 matplotlib==3.8.2 seaborn==0.13.0 scipy==1.11.4
+
 ```
+
+### 🐍 Python Version Support
+- **Supported Python Versions**: 3.8, 3.9, 3.10, 3.11
+- **Recommended Python Version**: 3.11
 
 ## 🚀 Quick Start
 ```python
@@ -62,10 +69,10 @@ qini, qini_scores = uplift_metric(df, kind='qini')
 
 
 ## 📊 Download Demo Data
-- Un-biaised dataset
+- Unbiased dataset
     - Download Link : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
     - Data source: https://ailab.criteo.com/criteo-uplift-prediction-dataset
-- Biaised dataset
+- Biased dataset
     - Download Link : https://pan.baidu.com/share/init?surl=CKJvzow7UFGwrdXbkt1mQA (Baidu Drive with code: 75hr )
     - Data source: https://github.com/kailiang-zhong/DESCN/tree/main/data/Lazada_dataset
 
@@ -79,7 +86,7 @@ deepuplift/
 │   ├── ...             
 ├── utils/          
 │   ├── evaluate.py    
-│   ├── matrics.py      
+│   ├── metrics.py      
 │   └── psm.py          
 ├── dataset/       
 │   └── data_link.md    
@@ -95,6 +102,16 @@ If you are interested in this project, you are welcome to contribute code, raise
 - 📮 Email: zhuangzhuangliu_v1@qq.com
 - 💚 Wechat: Wave_1024
 - 📚 公众号: 壮壮的三味书屋
+
+## 📝 Version History
+
+### [v1.0] - 2025-08-16
+#### Fixed Bugs
+- **EFIN** - detach c_logit during y1_pred avoid gradient flow
+- **Dragonnet** - add eps for target regularization
+- **Dataloaders** - fix bug in BaseModel.py
+
+
 
 ## 📄 License
 This project is licensed under the [MIT License](LICENSE).
