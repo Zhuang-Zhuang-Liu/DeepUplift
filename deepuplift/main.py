@@ -1,18 +1,19 @@
 import pandas as pd
+
 from functools import partial
-from utils.evaluate import *
+from utils.evaluate import calculate_metrics_by_treatment,plot_bins_uplift,uplift_metric
 
-from models.TarNet import *
-from models.CFRNet import *
-from models.DragonNet import *
-from models.DragonDeepFM import *
-from models.EFIN import *
-from models.DESCN import *
-from models.EUEN import *
-from models.CEVAE import * 
-from models.EEUEN import *
-from models.GANITE import *
-
+from models.TarNet import TarNet,tarnet_loss
+from models.CFRNet import CFRNet,cfrnet_loss
+from models.DragonNet import DragonNet
+from models.DragonNet import dragonnet_loss
+from models.DragonDeepFM import DragonDeepFM
+from models.EFIN import EFIN,efin_loss
+from models.DESCN import ESX,esx_loss
+from models.EUEN import EUEN,euen_loss
+from models.CEVAE import CEVAE,cevae_loss
+from models.EEUEN import EEUEN,eeuen_loss
+from models.GANITE import GANITE,ganite_loss
 
 if __name__ == "__main__":
 
@@ -24,11 +25,14 @@ if __name__ == "__main__":
 
 
   # io
-  df = pd.read_csv('dataset/criteo-uplift-v2.1-un-biaised-sample50w.csv').head(200000)
+  import os
+  current_dir = os.path.dirname(os.path.abspath(__file__))
+  csv_path = os.path.join(current_dir, 'dataset', 'criteo-uplift-v2.1-un-biaised-sample50w.csv')
+  df = pd.read_csv(csv_path).head(200000)
   df_train,df_test = df.iloc[:100000],df.iloc[100000:200000]  
   train_stats = df_train.groupby(treatment).agg({outcome: ['mean', 'count','sum']})
   test_stats = df_test.groupby(treatment).agg({outcome: ['mean', 'count','sum']})
-  print("Training set statistics:",train_stats,"\nTest set statistics:",test_stats)
+  print("Training set statistics:\n",train_stats,"\nTest set statistics:",test_stats)
 
 
   X_train,Y_train,T_train = df_train[features],df_train[outcome],df_train[treatment]
@@ -60,8 +64,8 @@ if __name__ == "__main__":
  
 
   # Train 
-  model,loss_f = est3,loss3
-  model.fit(X_train, Y_train, T_train, valid_perc=0.2, epochs=10, batch_size=64, learning_rate=1e-5, loss_f=loss_f)
+  model,loss_f = est10,loss10
+  model.fit(X_train, Y_train, T_train, valid_perc=0.2, epochs=2, batch_size=64, learning_rate=1e-5, loss_f=loss_f)
 
 
 
@@ -84,7 +88,8 @@ if __name__ == "__main__":
                                       treatment_value = 1,
                                       if_plot = False,
                                       )
-  print('》》》qini_scores:\n',qini_scores)
+  print('QINI_Score:\n',qini_scores)
+
 
   auuc, auuc_scores = uplift_metric(  df=df_result[[treatment,outcome,'y_diff',]],
                                       kind='auuc',
@@ -92,10 +97,14 @@ if __name__ == "__main__":
                                       treatment_value = 1,
                                       if_plot = False,
                                       )
-  print('》》》auuc_scores:\n',auuc_scores)
+  print('AUUC_Score:\n',auuc_scores)
 
   # Evaluate response
-  calculate_metrics_by_treatment(df_result,outcome_col=outcome,treatment_col=treatment, threshold=0.5)
+  calculate_metrics_by_treatment(df_result,
+                                 outcome_col=outcome,
+                                 treatment_col=treatment,
+                                 threshold=0.5,
+                                 if_plot =False)
 
 
 

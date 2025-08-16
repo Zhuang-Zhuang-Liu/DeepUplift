@@ -58,7 +58,7 @@ class BaseModel(nn.Module):
             y = torch.Tensor(y).reshape(-1, 1)
             train_dataset = TensorDataset(x, t, y)
             self.train_dataloader = DataLoader(
-                train_dataset, batch_size=self.batch_size, num_workers=self.num_workers
+                train_dataset, batch_size=batch_size, num_workers=num_workers
             )
 
 
@@ -146,7 +146,7 @@ class BaseModel(nn.Module):
 
 
 def BaseLoss(t_pred, y_preds, t_true, y_true, phi_x=None, loss_type='tarnet', 
-                IPM=False, alpha=0, beta=1.0, tarreg=False, task='regression'):
+                IPM=False, alpha=0, beta=1.0, tarreg=False, task='regression', tarreg_eps=None):
     
     n0 = torch.sum(1. - t_true)  # treated sample size
     n1 = torch.sum(t_true)       # control sample size
@@ -181,15 +181,22 @@ def BaseLoss(t_pred, y_preds, t_true, y_true, phi_x=None, loss_type='tarnet',
         treatment_loss = torch.sum(F.binary_cross_entropy(t_pred, t_true))
         loss = outcome_loss + alpha * treatment_loss
         if tarreg:
-            y_pred = t_true * y_preds[1] + (1 - t_true) * y_preds[0]  
-            y_pert = y_pred
+            y_pred = t_true * y_preds[1] + (1 - t_true) * y_preds[0]
+            # smooth
+            t_pred_smooth = (t_pred + 0.01) / 1.02 
+            h = (t_true / t_pred_smooth) - ((1 - t_true) / (1 - t_pred_smooth)) 
+            # eps
+            if tarreg_eps is not None:
+                y_pert = y_pred + tarreg_eps * h
+            else:
+                raise ValueError("tarreg_eps must be provided for tarreg")
             targeted_regularization = torch.sum((y_true - y_pert)**2)
             loss = loss + beta * targeted_regularization
         return loss, outcome_loss, treatment_loss
     
     elif loss_type == 'efin':
         criterion = torch.nn.BCELoss(reduction='mean')
-        treatment_loss = criterion(t_pred, (1 - t_true))     # Reverse Label
+        treatment_loss = criterion(t_pred, (1 - t_true)) # reverse Label
         loss = outcome_loss + treatment_loss
         return loss, outcome_loss, treatment_loss
     

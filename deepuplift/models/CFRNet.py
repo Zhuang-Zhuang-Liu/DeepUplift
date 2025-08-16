@@ -1,5 +1,5 @@
 from models.BaseModel import BaseModel, BaseLoss
-from models.TarNet import *
+from models.TarNet import TarNet
 
 
 

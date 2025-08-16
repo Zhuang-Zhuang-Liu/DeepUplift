@@ -97,17 +97,18 @@ class DragonDeepFM(BaseModel):
                             )  for _ in range(num_treatments)
                                             ])
 
+        self.epsilon = nn.Linear(in_features=1, out_features=1)
+        torch.nn.init.xavier_normal_(self.epsilon.weight)
+
     def forward(self, x, tr=None):
-        shared = self.shared_layer(x)  
-        t_pred = self.treatment_head(shared)  
-        y_preds = [head(shared) for head in self.outcome_heads] 
-        #y_preds = [y[:, 1] for y in y_preds]  # Take treatment=1 probability as sigmoid output
-        return t_pred,y_preds
+        phi_x = self.shared_layer(x)  
+        t_pred = self.treatment_head(phi_x)  
+        y_preds = [head(phi_x) for head in self.outcome_heads] 
+        eps = self.epsilon(torch.ones_like(t_pred)[:, 0:1])  #target regularization
+
+        return t_pred,y_preds,phi_x,eps
 
 
 
-def dragonnet_loss(t_pred, y_preds,t_true, y_true,phi_x=None,alpha=1.0,beta=1.0,tarreg=True, task='regression'):
-    return BaseLoss(t_pred=t_pred, y_preds=y_preds, 
-                       t_true=t_true, y_true=y_true,
-                       loss_type='dragonnet',
-                       alpha=alpha, beta=beta, tarreg=tarreg, task=task)
+# loss: dragonnet_loss
+# todo: multipal treatment

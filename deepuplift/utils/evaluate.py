@@ -77,7 +77,7 @@ def plot_bins_uplift(df, uplift_col, treatment_col, outcome_col,figsize=(8, 8),b
     """
     # Calculate
     df['bins'] = pd.qcut(df[uplift_col], bins,duplicates='drop')
-    result = df.groupby([treatment_col, 'bins'])[outcome_col].agg(['mean', 'sum','count'])
+    result = df.groupby([treatment_col, 'bins'], observed=True)[outcome_col].agg(['mean', 'sum','count'])
     result.reset_index(inplace=True)
     
     # Plot
@@ -146,9 +146,12 @@ def calculate_metrics_by_treatment(df, outcome_col,treatment_col,threshold=0.5,i
         plt.subplots_adjust(wspace=0.3, hspace=0.3)  
         auc_y0, cm_y0 = calculate_metrics(df_t0, outcome_col, 'y0_pred', threshold, axes[0, 0], axes[1, 0])
         auc_y1, cm_y1 = calculate_metrics(df_t1, outcome_col, 'y1_pred', threshold, axes[0, 1], axes[1, 1])
+        plt.show()
     else:
         auc_y0, cm_y0 = calculate_metrics(df_t0, outcome_col, 'y0_pred', threshold, None, None)
         auc_y1, cm_y1 = calculate_metrics(df_t1, outcome_col, 'y1_pred', threshold, None, None)
+
+
 
     return {
         'auc_y0': auc_y0,

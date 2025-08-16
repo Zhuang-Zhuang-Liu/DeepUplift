@@ -107,12 +107,11 @@ class EFIN(BaseModel):
         u_tau = self.u_tau(u_last)
 
         if self.task == 'classification':
-            ut_pred = torch.sigmoid(c_logit + u_tau)
             y0_pred = c_prob
-            y1_pred = ut_pred
-        elif self.task == 'regression':  # regression
+            y1_pred = torch.sigmoid(c_logit.detach() + u_tau) # detach: avoid gradient flow
+        elif self.task == 'regression':  
             y0_pred = c_logit
-            y1_pred = u_tau + c_logit
+            y1_pred = u_tau + c_logit.detach()  # detach: avoid gradient flow
         else:
             raise ValueError("task must be either 'regression' or 'classification'")
         
