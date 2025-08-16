@@ -39,8 +39,7 @@ DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal 
   - 🔄 Data Preprocessing Tools
 
 ### 🔧 Dependencies
-- **Supported Python Versions**: 3.8, 3.9, 3.10, 3.11
-- **Recommended Python Version**: 3.11
+- **Python Versions**: 3.11(Recommended), 3.8, 3.9, 3.10
 ```bash
 pip install pandas==2.1.4 torch==1.12.1 geomloss==0.2.6 sklearn==1.3.2 matplotlib==3.8.2 seaborn==0.13.0 scipy==1.11.4
 ```
