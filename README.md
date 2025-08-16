@@ -1,5 +1,6 @@
 # 📈 DeepUplift 
 **Current Version: v1.0**
+
 DeepUplift is a **PyTorch-based** project of deep-learning heterogeneous causal effect models along with common evaluation metrics and training components.You can easily use uplift models with **model.fit()** and **model.predict()**.
 
 
@@ -71,7 +72,7 @@ qini, qini_scores = uplift_metric(df, kind='qini')
     - Download Link : https://pan.quark.cn/s/6408800b0b8e (Quark Cloud Drive)
     - Data source: https://ailab.criteo.com/criteo-uplift-prediction-dataset
 - Biased dataset
-    - Download Link : https://pan.baidu.com/share/init?surl=CKJvzow7UFGwrdXbkt1mQA (Baidu Drive with code: 75hr )
+    - Download Link : https://pan.baidu.com/share/init?surl=CKJvzow7UFGwrdXbkt1mQA (Baidu Drive: 75hr )
     - Data source: https://github.com/kailiang-zhong/DESCN/tree/main/data/Lazada_dataset
 
 
