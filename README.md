@@ -92,11 +92,6 @@ deepuplift/
 ```
 
 
-## 💬 Disscussion
-|公众号：壮壮的三味书屋|Wechat：Wave_1024|学习小组
-|:--:|:--:|:--:|
-| <img src="pics/gh_qrcode.jpg" width="150" height="150"> | <img src="pics/wx_qrcode.png" width="150" height="150"> |<img src="pics/wx_qrcode.png" width="150" height="150"> |
-
 
 
 ## 🤝 Main contributors ( welcome to join us! )
